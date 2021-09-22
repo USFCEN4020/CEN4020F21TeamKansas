@@ -12,7 +12,9 @@ file = open("student_data.csv")
 reader = csv.reader(file)
 lines = len(list(reader))
 
-
+#test git
+print("Hello")
+print("Haha")
 def max_accts():
     # this makes sure we only support five accounts for first epic
     csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
