@@ -3,6 +3,7 @@ from csv import writer
 import os.path
 from csv import writer
 from student import Student
+from job import Job
 
 studentList = []  # student list used to add student object attributes and insert into file
 file_exists = os.path.exists('student_data.csv')
@@ -12,11 +13,6 @@ file = open("student_data.csv")
 reader = csv.reader(file)
 lines = len(list(reader))
 
-#test git
-print("Hello")
-print("Haha")
-#hello
-#I test too much today ><
 
 def max_accts():
     # this makes sure we only support five accounts for first epic
@@ -39,13 +35,35 @@ def append_list_as_row(file_name, list_of_elem):
 
 def welcome(decision):
     if decision == "1":
-        register()
+        register() #takes you to register screen
     elif decision == "2":
-        login()
+        login() #takes you to login screen
+    elif decision == "3":
+        find_someone() #find someone function
+    elif decision == "4":
+        print()
+        print("Video is now playing")
+        main()
     else:
         print("Invalid option, please try again")
-        decision = input("1. Create an account\n2. Login\nYour selection: ")
+        decision = input("1. Create an account\n2. Login\n3. Find someone you know \n4. Play the video \nYour selection: ")
         welcome(decision)
+
+# this is after find_someone runs and is able to find somone 
+#prompts the user to register/login since their friend has an account
+def join_Incollege():
+    print("Select one of the options below: ")
+    print("1. Log in")
+    print("2. Sign up")
+    print("3. Return to homescreen")
+    decision = input("Your selection: ")
+    
+    if(decision == "1"):
+        login()
+    elif(decision == "2"):
+        register()
+    elif(decision == "3"):
+        main()
 
 
 def checkPass(password):
@@ -119,9 +137,8 @@ def login():
 
 
 def menu():
-    print("")
-    print("1. Search for job/internship")
-    print("2. Find someone you know")
+    print("1. Post a job")
+    print("2. Search for job/internship")
     print("3. Learn a new skill")
     print("4. Log out")
     print("5. Exit program")
@@ -131,7 +148,7 @@ def menu():
         print("Under construction for now"
               " returning to menu")
         menu()
-    elif(choice == "2"):
+    elif (choice == "2"):
         print("Under construction for now"
               " returning to menu")
         menu()
@@ -191,9 +208,15 @@ def register():
 
     # take input
     username = input("Enter username: ")
+    password = input("Enter your password: ")
     firstname = input("Enter your first name: ")
     lastname = input("Enter your last name: ")
-    password = input("Enter your password: ")
+
+    # this is capitalizing the first letter of first and last name
+    a_string = firstname 
+    firstname = a_string.title()
+    a_string = lastname
+    lastname = a_string.title()
 
     # This block checks password
     flag = checkPass(password)
@@ -217,11 +240,74 @@ def register():
     print("Account successfully created, come back next time and login!")
 
 
+def find_someone():
+    firstname = input("Enter first name: ")
+    lastname = input("Enter last name: ")
+
+    #capitalizing first letter of first and last name
+    #this is needed because if they write the persons name in lowercase
+    #it will say the name is not there
+    a_string = firstname
+    firstname = a_string.title()
+    a_string = lastname
+    lastname = a_string.title()
+
+    flag = findFirstName(firstname)
+    flag2 = findLastName(lastname)
+    # both username and password have to exist in file to reach successful login
+    if not flag and not flag2:
+        print("They are not yet a part of the InCollege system yet")
+        decision = input("Press 1 to go back to the menu")
+        back_to_menu(decision)
+    print("They are a part of the InCollege system")
+    print("Join them!")
+    print()
+    join_Incollege()
+
+
+def back_to_menu(decision): #gives user a chance to go back to menu at any point
+    if decision == '1':
+        menu()
+    while decision != '1':
+        decision = input("Invalid input, please press 1 to go back to menu: ")
+    menu()
+        
+
+def findFirstName(firstname):
+    # searches file for username for login
+    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
+    # loop through the csv list
+    for line in csv_file:
+        if firstname in line:
+            return True
+    return False
+
+
+
+def findLastName(lastname):
+    #fdsfsdfsdf
+    # searches file for username for login
+    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
+    # loop through the csv list
+    for line in csv_file:
+        if lastname in line:
+            return True
+    return False
+
+
+
 def main():  # controller of program
+    
+    story = open("success_story.txt", "r")
+    print()
+    print()
+    print(story.read())
+    print()
+    print()
     print("Welcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
     print("")
     print("Are you a new user? Or do you already have an account? Select an option below")
-    decision = input("1. Create an account\n2. Login\nYour selection: ")
+    decision = input("1. Create an account\n2. Login\n3. Find someone you know \n4. Play the video \nYour selection: ")
     welcome(decision)
 
 if __name__ == "__main__":
