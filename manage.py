@@ -31,19 +31,21 @@ class Manage:
             if element.get_title() == job.get_title():
                 print("Job already exists!")
         
-        if len(self.job_list) < 6:
+        #if number of job less than 6
+        if len(self.job_list) < 5:
             self.job_list.append(job)
-            print("Posted the Job Sucessfully!")
+            
             #write to the file
             with open(job_file_name, "a") as job_file:
                 write_csv = csv.writer(job_file)
-                write_csv.writerow(job.get_title(),job.get_description(),job.get_employer(),job.get_location(),job.get_salary(),job.get_post_name())
+                write_csv.writerow((job.get_title(),job.get_description(),job.get_employer(),job.get_location(),job.get_salary(),job.get_post_name()))
+                print("Posted the Job Sucessfully!")
         else: #number of job > 5
             print("Reach the limit of job (5)!")
             return
 
     
-    def post_new_job(self, post_name):
+    def post_new_job(self):
         job_title = input("Enter Job Title: ")
         job_description = input("Enter Job Description: ")
         job_employer = input("Enter The Employer: ")
@@ -51,10 +53,11 @@ class Manage:
         job_salary = input("Enter Job Salary: ")
         #need to check valid input
         #check salary input
-        
+        post_name = "Nghia"
         new_job = job.Job(job_title, job_description, job_employer, job_location, job_salary, post_name)
         m = Manage()
         # return user's name who posted a job
+        
         return m.add_job(new_job, post_name)
 
 
