@@ -1,9 +1,9 @@
 import csv
 from csv import writer
 import os.path
-from csv import writer
 from student import Student
 from job import Job
+import manage as m
 
 studentList = []  # student list used to add student object attributes and insert into file
 file_exists = os.path.exists('student_data.csv')
@@ -137,8 +137,8 @@ def login():
 
 
 def menu():
-    print("1. Post a job")
-    print("2. Search for job/internship")
+    print("1. Search for job/internship")
+    print("2. Post a job")    
     print("3. Learn a new skill")
     print("4. Log out")
     print("5. Exit program")
@@ -147,10 +147,13 @@ def menu():
     if (choice == "1"):
         print("Under construction for now"
               " returning to menu")
+
         menu()
     elif (choice == "2"):
-        print("Under construction for now"
-              " returning to menu")
+        #post a job
+        job_manage = m.Manage()
+        job_manage.post_new_job()
+
         menu()
     elif(choice == "3"):
         menu_learnskill()
@@ -307,7 +310,11 @@ def main():  # controller of program
     print("Welcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
     print("")
     print("Are you a new user? Or do you already have an account? Select an option below")
-    decision = input("1. Create an account\n2. Login\n3. Find someone you know \n4. Play the video \nYour selection: ")
+    decision = input("1. Create an account\n"
+    "2. Login\n"
+    "3. Find someone you know \n"
+    "4. Play the video \nYour selection: ")
+
     welcome(decision)
 
 if __name__ == "__main__":
