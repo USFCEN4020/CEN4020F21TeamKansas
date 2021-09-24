@@ -34,7 +34,17 @@ def append_list_as_row(file_name, list_of_elem):
         csv_writer.writerow(list_of_elem)
 
 
-def welcome(decision):
+def welcome():
+
+    print("Welcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
+    print("")
+    print("Are you a new user? Or do you already have an account? Select an option below")
+    decision = input("1. Create an account\n"
+    "2. Login\n"
+    "3. Find someone you know \n"
+    "4. Play the video \n"
+    "0. Exit\nYour selection: ")
+
     if decision == "1":
         register() #takes you to register screen
     elif decision == "2":
@@ -250,7 +260,7 @@ def find_someone():
     # both username and password have to exist in file to reach successful login
     if not flag and not flag2:
         print("They are not yet a part of the InCollege system yet")
-        decision = input("Press 1 to go back to the menu")
+        decision = input("Press 1 to go back to the menu: ")
         back_to_menu(decision)
     print("They are a part of the InCollege system")
     print("Join them!")
@@ -260,10 +270,10 @@ def find_someone():
 
 def back_to_menu(decision): #gives user a chance to go back to menu at any point
     if decision == '1':
-        job_menu()
+        welcome()
     while decision != '1':
         decision = input("Invalid input, please press 1 to go back to menu: ")
-    job_menu()
+    welcome()
         
 
 def findFirstName(firstname):
