@@ -2,6 +2,7 @@
 Manage Input Output file
 Manage login
 '''
+from typing import Any
 import job
 import csv
 import os.path
@@ -21,8 +22,7 @@ class Manage:
         #title for job data
         if not os.path.isfile(job_file_name):
             with open(job_file_name, "w") as job_file:
-                write_csv = csv.writer(job_file)
-                write_csv.writerow(("Title","Description","Employer","Location","Salary","Post_Name"))
+                write_csv = csv.writer(job_file)                
         
         #add data from the file to job list
         with open(job_file_name, "r") as job_file:
@@ -35,12 +35,15 @@ class Manage:
         if not os.path.isfile(student_file_name):
             with open(student_file_name, "w") as student_file:
                 write_csv = csv.writer(student_file)
-        #add data from the file to student.py
+
+        #add data from the file to student.py        
         with open(student_file_name, "r") as student_file:
             read_csv = csv.reader(student_file)
             for row in read_csv:
                 if row != []:
                     self.student_list.append(student.Student(row[0], row[1], row[2], row[3]))
+                    
+                       
 
     #get student list and get length of student list
     def get_student_list(self):
@@ -63,6 +66,8 @@ class Manage:
         flag = u.findUsername(username)
         flag2 = u.findPassword(password)
 
+        print(flag)
+        print(flag2)
     # both username and password have to exist in file to reach successful login
         while flag == False or flag2 == False:
             print("Invalid username/password. Please try again")
@@ -82,13 +87,12 @@ class Manage:
         
         #if number of job less than 6
         if len(self.job_list) < 5:
-            self.job_list.append(job)
-            
+            self.job_list.append(job)            
             #write to the file
-            with open(job_file_name, "a") as job_file:
+            with open(job_file_name, 'a') as job_file:
                 write_csv = csv.writer(job_file)
                 write_csv.writerow((job.get_title(),job.get_description(),job.get_employer(),job.get_location(),job.get_salary(),job.get_post_name()))
-                print("\nPosted the Job Sucessfully!")
+                print("\nPosted the Job Sucessfully!\n")
         else: #number of job > 5
             print("\nReach the limit of job (5)!\n")
             return
@@ -104,10 +108,9 @@ class Manage:
         #check salary input
         
         new_job = job.Job(job_title, job_description, job_employer, job_location, job_salary, post_name)
-        m = Manage()
         # return user's name who posted a job
         
-        return m.add_job(new_job, post_name)
+        return self.add_job(new_job, post_name)
 
 
     
