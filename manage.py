@@ -69,7 +69,7 @@ class Manage:
         print(flag)
         print(flag2)
     # both username and password have to exist in file to reach successful login
-        while flag == False or flag2 == False:
+        while flag == False or flag2 == False or username == password:
             print("Invalid username/password. Please try again")
             username = input("Enter username: ")
             password = input("Enter password: ")
