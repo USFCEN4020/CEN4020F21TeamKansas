@@ -9,7 +9,7 @@ def main():  # controller of program
     print(story.read())
     print()
     print()
-    time.sleep(3)
+    time.sleep(2)
     print("Welcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
     print("")
     print("Are you a new user? Or do you already have an account? Select an option below")
