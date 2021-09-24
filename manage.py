@@ -32,7 +32,7 @@ class Manage:
                 print("Job already exists!")
         
         #if number of job less than 6
-        if len(self.job_list) < 5:
+        if len(self.job_list) < 4:
             self.job_list.append(job)
             
             #write to the file
@@ -45,7 +45,7 @@ class Manage:
             return
 
     
-    def post_new_job(self):
+    def post_new_job(self, post_name):
         job_title = input("Enter Job Title: ")
         job_description = input("Enter Job Description: ")
         job_employer = input("Enter The Employer: ")
@@ -53,7 +53,7 @@ class Manage:
         job_salary = input("Enter Job Salary: ")
         #need to check valid input
         #check salary input
-        post_name = "Nghia"
+        
         new_job = job.Job(job_title, job_description, job_employer, job_location, job_salary, post_name)
         m = Manage()
         # return user's name who posted a job

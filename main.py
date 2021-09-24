@@ -143,6 +143,7 @@ def menu():
     print("4. Log out")
     print("5. Exit program")
     choice = input("Your selection: ")
+    s = Student()    
 
     if (choice == "1"):
         print("Under construction for now"
@@ -151,8 +152,10 @@ def menu():
         menu()
     elif (choice == "2"):
         #post a job
+        name = s.get_first()
+        #name = "Nghia"
         job_manage = m.Manage()
-        job_manage.post_new_job()
+        job_manage.post_new_job(name)
 
         menu()
     elif(choice == "3"):
