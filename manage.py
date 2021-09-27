@@ -14,12 +14,12 @@ class Manage:
 
         # student_data.csv
         if not os.path.isfile(FILENAME_STUDENT):
-            with open(FILENAME_STUDENT,"a") as file:
+            with open(FILENAME_STUDENT,'a') as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow(("User_Name", "Password", "First_Name", "Last_Name"))
 
         # Add data from student_data.csv to student_list
-        with open(FILENAME_STUDENT,"r") as file:
+        with open(FILENAME_STUDENT,'r') as file:
             reader_csv = csv.reader(file)
             for item in reader_csv:
                 if item != []:
@@ -28,12 +28,12 @@ class Manage:
 
         # Add a Title to the job_data.csv
         if not os.path.isfile(FILENAME_JOB):
-            with open(FILENAME_JOB,"a") as file:
+            with open(FILENAME_JOB,'a') as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Post_Name"))
 
         # Add data from job_data to job_list
-        with open(FILENAME_JOB,"r") as file:
+        with open(FILENAME_JOB,'r') as file:
             reader_csv = csv.reader(file)
             for item in reader_csv:
                 if item != []:
