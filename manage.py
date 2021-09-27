@@ -105,7 +105,6 @@ class Manage:
         print("\nThey are not yet a part of the InCollege system yet.")
         return None
 
-
     def add_job(self, job, n):
         if len(self.job_list) >= 5:
             print("\nYou cannot post anymore jobs. Limited to 5.")
