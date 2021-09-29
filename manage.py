@@ -3,14 +3,17 @@ import csv
 import os.path
 import utility
 import job as j
+import settings as set
 
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_JOB = "job_data.csv"
+FILENAME_SETTINGS = "settings.csv"
 
 class Manage:
     def __init__(self):
         self.student_list = []
         self.job_list = []
+        self.settings_list = []
 
         # student_data.csv
         if not os.path.isfile(FILENAME_STUDENT):
@@ -38,6 +41,19 @@ class Manage:
             for item in reader_csv:
                 if item != []:
                     self.job_list.append(j.Job(item[0], item[1], item[2], item[3], item[4], item[5]))
+
+        # Adds titles for the settings.csv
+        if not os.path.isfile(FILENAME_SETTINGS):
+            with open(FILENAME_SETTINGS, "w") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
+
+        # Adds data from settings.csv to settings_list
+        with open(FILENAME_SETTINGS, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.settings_list.append(set.Settings(item[0],item[1], item[2], item[3], item[4]))
 
     def get_list(self):
         return self.student_list
@@ -154,8 +170,35 @@ class Manage:
             with open(FILENAME_STUDENT, "a") as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow((student.get_user_name(), student.get_password(), student.get_first(), student.get_last()))
+
+            # Sets the default settings for the user.
+            with open(FILENAME_SETTINGS, "a") as file_stg:
+                writer_csv = csv.writer(file_stg)
+                writer_csv.writerow((user_name, "ON", "ON", "ON", "English"))
+
             return user_name
 
         else:
             print("\nAll accounts have been created. Can't add anymore.")
             return None
+
+    def manage_settings(self, username, field, state):
+        manage = Manage()
+        # find the settings object associated with that user
+        for item in manage.settings_list:
+            if item.get_user() == username:
+                if field == "email_notifcations":
+                    return item.get_email_notifications()
+                elif field == "sms_notifications":
+                    return item.get_sms_notifications()
+                elif field == "targeted_ads":
+                    return item.get_targeted_ads()
+                elif field == "language_set":
+                    return item.get_language()
+                else:
+                    print("This field in the Guest Controls/Settings do not exist")
+                    return "NONE"
+
+        # Settings are only made when a user is created. Check if it returns the user's username
+        print("The user Does Not Exist.")
+        return item.get_user()
