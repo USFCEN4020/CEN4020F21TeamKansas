@@ -44,12 +44,12 @@ class Manage:
 
         # Adds titles for the settings.csv
         if not os.path.isfile(FILENAME_SETTINGS):
-            with open(FILENAME_SETTINGS, "w") as file:
+            with open(FILENAME_SETTINGS, 'w') as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
 
         # Adds data from settings.csv to settings_list
-        with open(FILENAME_SETTINGS, "r") as file:
+        with open(FILENAME_SETTINGS, 'r') as file:
             reader_csv = csv.reader(file)
             for item in reader_csv:
                 if item != []:
@@ -167,12 +167,12 @@ class Manage:
             user_name = student.get_user_name()
             print("Account successfully created.")
 
-            with open(FILENAME_STUDENT, "a") as file:
+            with open(FILENAME_STUDENT, 'a') as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow((student.get_user_name(), student.get_password(), student.get_first(), student.get_last()))
 
             # Sets the default settings for the user.
-            with open(FILENAME_SETTINGS, "a") as file_stg:
+            with open(FILENAME_SETTINGS, 'a') as file_stg:
                 writer_csv = csv.writer(file_stg)
                 writer_csv.writerow((user_name, "ON", "ON", "ON", "English"))
 

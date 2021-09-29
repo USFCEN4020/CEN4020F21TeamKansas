@@ -39,7 +39,7 @@ def Welcome_Page():
         Welcome_Page()
     elif (decision == "5"):
         UsefulLinks_Page(0, blank_string)
-    elif (decision == "5"):
+    elif (decision == "6"):
         ImportantLinks_Page(0, blank_string)
     elif (decision == "7"):
         return
@@ -470,4 +470,4 @@ def GeneralLinks_Page(value, name):
         print("\nUnder construction")
         GeneralLinks_Page(value, name)
     elif (decision == "8"):
-        GeneralLinks_Page(value, name)
+        UsefulLinks_Page(value, name)
