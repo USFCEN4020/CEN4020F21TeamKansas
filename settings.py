@@ -9,10 +9,10 @@ class Settings:
     def get_user(self):
         return self.user
 
-    def get_email_notif(self):
+    def get_email_notifications(self):
         return self.email_notifications
 
-    def get_sms_notif(self):
+    def get_sms_notifications(self):
         return self.sms_notifications
 
     def get_targeted_ads(self):

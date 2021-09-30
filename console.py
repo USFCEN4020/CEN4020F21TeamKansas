@@ -5,7 +5,6 @@ import csv
 
 
 FILENAME_SETTINGS = "settings.csv"
-FILENAME_POLICIES = "policies.csv"
 blank_string = " "
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
@@ -51,12 +50,13 @@ def Login_Page(name):
     print("1. Search for job/internship")
     print("2. Post a Job")
     print("3. Learn a New Skill")
-    print("4. Log Out")
-    print("5. Exit Program")
+    print("4. Useful Links")
+    print("5. inCollege Important Links")
+    print("6. Log Out")
     decision = input("\nYour selection: ")
 
-    # Used for input validation. User should only choose a value 1-5
-    decision = utility.checkUserInput(decision, 1, 5)
+    # Used for input validation. User should only choose a value 1-7
+    decision = utility.checkUserInput(decision, 1, 7)
 
     if (decision == "1"):
         print("\nUnder construction for now")
@@ -68,9 +68,11 @@ def Login_Page(name):
     elif (decision == "3"):
         LearnSkill_Page(name)
     elif (decision == "4"):
-        Welcome_Page()
+        UsefulLinks_Page(1, name)
     elif (decision == "5"):
-        return
+        ImportantLinks_Page(1, name)
+    elif (decision == "6"):
+        Welcome_Page()
 
 
 # Displays 5 skills that the user can learn (all of which return "under construction"). The user is also allowed to not choose a skill, which will bring the user back to the welcome screen by calling welcomeScreen.
@@ -172,60 +174,37 @@ def ImportantLinks_Page(value, name):
     decision = utility.checkUserInput(decision, 1, 9)
 
     if (decision == "1"):
-        PolicyInfo(value, name, decision)
+        print("\nA Copyright Notice: Copyright © 2021 by Team Kansas. All rights reserved.")
+        ImportantLinks_Page(value, name)
     elif (decision == "2"):
-        PolicyInfo(value, name, decision)
+        print("\nAbout inCollege: inCollege is the best application designed for college students hoping to connect with other college students in effort to land a job!")
+        ImportantLinks_Page(value, name)
     elif (decision == "3"):
-        PolicyInfo(value, name, decision)
+        print("\nAccessibility: We are committed to making accessibility a core consideration from the every stage and update of inCollege.")
+        ImportantLinks_Page(value, name)
     elif (decision == "4"):
-        PolicyInfo(value, name, decision)
+        print("\nUser Agreement: With agreement to registerign an account and signing in, the user complies with terms and conditions for inCollege.")
+        ImportantLinks_Page(value, name)
     elif (decision == "5"):
+        print("\nOur privacy policy explains how we treat your personal data and protect your privacy when you use our Services. By using our Services, you agree that inCollege can use such data in accordance with our privacy policy.")
         PrivacyPolicy_Page(value, name)
     elif (decision == "6"):
-        PolicyInfo(value, name, decision)
+        print("\nCookie Policy: Chocolate Chip Cookies or Rainbow Sprinkle Cookies?")
+        ImportantLinks_Page(value, name)
     elif (decision == "7"):
-        PolicyInfo(value, name, decision)
+        print("\nCopyright Policy: We own all things inCollege.")
+        ImportantLinks_Page(value, name)
     elif (decision == "8"):
-        PolicyInfo(value, name, decision)
+        print("\nBrand Policy: This policy governs the use of all inCollege trademarks (see definition) for any purpose. Consistency in the use of inCollege trademarks strengthens their value and our ability to protect them from unauthorized use. The inCollege should be consulted whenever it is not clear whether a proposed use is permissible.")
+        ImportantLinks_Page(value, name)
     elif (decision == "9"):
         if value == 0:
             Welcome_Page()
         elif value == 1:
             Login_Page(name)
 
-def PolicyInfo(value, name, user_selection):
-    empty = []
-    lines = list()
-    count = 0
-
-    with open(FILENAME_POLICIES, 'r') as file:
-        reader = csv.reader(file)
-        for item in reader:
-            if (item != empty):
-                lines.append(item)
-                count = count + 1
-            for field in item:
-                if(field == user_selection):
-                    pol = lines[count-1][1]
-                    print()
-                    print(pol)
-
-    if(user_selection != "5"):
-        # Gives user the option to return to screen
-        print()
-        print("\nSelect one of the below options:")
-        print("1. Go back to previous screen: Important Links")
-        decision = input("Your selection: ")
-
-        # Used for input validation. User should only choose a value 1
-        decision = utility.checkUserInput(decision, 1, 1)
-
-        if (decision == "1"):
-            ImportantLinks_Page(value, name)
 
 def PrivacyPolicy_Page(value, name):
-    # Displays the Privacy Policy
-    PolicyInfo(value, name, "5")
 
     if value == 0:
         print("\nSign in for Guest Controls and Language Features")
@@ -241,14 +220,14 @@ def PrivacyPolicy_Page(value, name):
     # A Signed in user will get the option to access guest controls and Language
     elif value == 1:
         print()
-        print("Privacy Policy - Select one of the below options:")
+        print("\nPrivacy Policy - Select one of the below options:")
         print("1. Guest Controls")
         print("2. Language")
-        print("3. Go back to InCollege Import Links")
-        decision  = input("Your selection: ")
+        print("3. Go back to InCollege Important Links")
+        decision = input("Your selection: ")
 
         # Used for input validation. User should only choose a value 1-3
-        decision  = utility.checkUserInput(decision, 1, 3)
+        decision = utility.checkUserInput(decision, 1, 3)
 
         if (decision  == "1"):
             GuestControls_Page(value, name)
@@ -259,7 +238,7 @@ def PrivacyPolicy_Page(value, name):
 
 def GuestControls_Page(value, name):
 
-    entry = [" ", " ", " ", " ", " "]
+    toggle = [" ", " ", " ", " ", " "]
     lines = list()
     empty = []
     count = 0
@@ -286,7 +265,7 @@ def GuestControls_Page(value, name):
     print("1. Toggle ON/OFF Email Feature")
     print("2. Toggle ON/OFF SMS Feature")
     print("3. Toggle ON/OFF Targeted Advertising Feature")
-    print("4. Go back to  Privacy Policy")
+    print("4. Go back to Privacy Policy")
     decision = input("Your selection: ")
 
     # Used for input validation. User should only choose a value 1-4
@@ -323,7 +302,7 @@ def GuestControls_Page(value, name):
             toggle[3] = "OFF"
         else:
             toggle[3] = "ON"
-        lines.append(entry)
+        lines.append(toggle)
 
         # overwrite
         with open(FILENAME_SETTINGS, 'w') as writeFile:
@@ -335,8 +314,7 @@ def GuestControls_Page(value, name):
         PrivacyPolicy_Page(value, name)
 
 
-#name is the unique username of the user
-#display language and allow to change
+# Name is username of the user so each user has their own settings
 def Language_Page(value, name):
 
     #helper variables
@@ -354,24 +332,24 @@ def Language_Page(value, name):
                 count = count + 1
             for field in item:
                 if (field == name):
-                    entry = [lines[count-1][0], lines[count-1][1], lines[count-1][2], lines[count-1][3], lines[count-1][4]]
+                    toggle = [lines[count-1][0], lines[count-1][1], lines[count-1][2], lines[count-1][3], lines[count-1][4]]
                     lines.pop()
                     count = count - 1
 
     print()
-    print("Language is currently set to", toggle[4])
+    print("Your Language is currently set to", toggle[4])
     print("Select one of the below options:")
-    print("(1) Set to English")
-    print("(2) Set to Spanish")
-    print("(3) Go back to previous screen: Privacy Policy")
+    print("1. Set to your language to English")
+    print("2. Set to your language to Spanish")
+    print("3. Go back to Privacy Policy")
     decision = input("Your selection: ")
 
     # Used for input validation. User should only choose a value 1-4
     decision = utility.checkUserInput(decision, 1, 3)
 
     if (decision == "1"):
-        toggle [4] = "English"
-        lines.append(entry)
+        toggle[4] = "English"
+        lines.append(toggle)
 
         #overwrite
         with open(FILENAME_SETTINGS, 'w') as writeFile:
@@ -382,7 +360,7 @@ def Language_Page(value, name):
 
     elif (decision == "2"):
         toggle [4] = "Spanish"
-        lines.append(entry)
+        lines.append(toggle)
         #overwrite
         with open(FILENAME_SETTINGS, 'w') as writeFile:
             writer = csv.writer(writeFile)
@@ -391,7 +369,7 @@ def Language_Page(value, name):
         Language_Page(value, name)
 
     elif (decision == "3"):
-        lines.append(entry)
+        lines.append(toggle)
 
         # Adds toggle to list
         # overwrite

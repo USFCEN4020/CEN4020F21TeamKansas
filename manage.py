@@ -33,7 +33,7 @@ class Manage:
         if not os.path.isfile(FILENAME_JOB):
             with open(FILENAME_JOB,'a') as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Post_Name"))
+                writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Poster_Name"))
 
         # Add data from job_data to job_list
         with open(FILENAME_JOB,'r') as file:
@@ -44,12 +44,12 @@ class Manage:
 
         # Adds titles for the settings.csv
         if not os.path.isfile(FILENAME_SETTINGS):
-            with open(FILENAME_SETTINGS, 'w') as file:
+            with open(FILENAME_SETTINGS, "w") as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
 
         # Adds data from settings.csv to settings_list
-        with open(FILENAME_SETTINGS, 'r') as file:
+        with open(FILENAME_SETTINGS, "r") as file:
             reader_csv = csv.reader(file)
             for item in reader_csv:
                 if item != []:
@@ -167,12 +167,12 @@ class Manage:
             user_name = student.get_user_name()
             print("Account successfully created.")
 
-            with open(FILENAME_STUDENT, 'a') as file:
+            with open(FILENAME_STUDENT, "a") as file:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow((student.get_user_name(), student.get_password(), student.get_first(), student.get_last()))
 
             # Sets the default settings for the user.
-            with open(FILENAME_SETTINGS, 'a') as file_stg:
+            with open(FILENAME_SETTINGS, "a") as file_stg:
                 writer_csv = csv.writer(file_stg)
                 writer_csv.writerow((user_name, "ON", "ON", "ON", "English"))
 
@@ -185,20 +185,20 @@ class Manage:
     def manage_settings(self, username, field, state):
         manage = Manage()
         # find the settings object associated with that user
-        for item in manage.settings_list:
-            if item.get_user() == username:
-                if field == "email_notifcations":
-                    return item.get_email_notifications()
+        for toggleitem in manage.settings_list:
+            if toggleitem.get_user() == username:
+                if field == "email_notifications":
+                    return toggleitem.get_email_notifications()
                 elif field == "sms_notifications":
-                    return item.get_sms_notifications()
+                    return toggleitem.get_sms_notifications()
                 elif field == "targeted_ads":
-                    return item.get_targeted_ads()
+                    return toggleitem.get_targeted_ads()
                 elif field == "language_set":
-                    return item.get_language()
+                    return toggleitem.get_language()
                 else:
                     print("This field in the Guest Controls/Settings do not exist")
                     return "NONE"
 
         # Settings are only made when a user is created. Check if it returns the user's username
         print("The user Does Not Exist.")
-        return item.get_user()
+        return toggleitem.get_user()
