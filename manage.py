@@ -4,16 +4,21 @@ import os.path
 import utility
 import job as j
 import settings as set
+import profiles as p
+from datetime import datetime
 
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_JOB = "job_data.csv"
 FILENAME_SETTINGS = "settings.csv"
+FILENAME_PROFILE = "profiles.csv"
+
 
 class Manage:
     def __init__(self):
         self.student_list = []
         self.job_list = []
         self.settings_list = []
+        self.profiles_list = []
 
         # student_data.csv
         if not os.path.isfile(FILENAME_STUDENT):
@@ -54,6 +59,20 @@ class Manage:
             for item in reader_csv:
                 if item != []:
                     self.settings_list.append(set.Settings(item[0],item[1], item[2], item[3], item[4]))
+
+        # Adds titles for the profiles.csv
+        if not os.path.isfile(FILENAME_PROFILE):
+            with open(FILENAME_PROFILE, "w") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("user", "title", "major", "university", "biography", "experience", "education"))
+
+        # Adds data from profiles.csv to profiles_list
+        with open(FILENAME_PROFILE, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.profiles_list.append(p.Profiles(item[0], item[1], item[2], item[3], item[4], item[5], item[6]))
+
 
     def get_list(self):
         return self.student_list
@@ -202,3 +221,110 @@ class Manage:
         # Settings are only made when a user is created. Check if it returns the user's username
         print("The user Does Not Exist.")
         return toggleitem.get_user()
+
+    # Create profile function
+    def create_profile(self, name):
+        title = input("Enter a Title: ")
+        major = input("Enter a Major: ")
+        major = major.title()
+        university = input("Enter University: ")
+        university = university.title()
+        biography = input("About Yourself: ")
+
+        check_experience = input("Do you have any experience you would like to add? (Yes/No)  ")
+        experience = ""
+
+        while check_experience.upper() != "YES" and check_experience.upper() != "NO":
+            check_experience = input("Invalid Input. Please Try Again. Do you have any experience you would like to add? (Yes/No) ")
+
+        if check_experience.upper() == "YES":
+            for value in range(3):
+                experience_title = input("Job Title: ")
+                experience_employer = input("Employer: ")
+                experience_date_started = input("Date Started MM/DD/YYYY: ")
+                while (check_date(experience_date_started) == False):
+                    experience_date_started = input("Date not valid. Please Try Again: ")
+                experience_date_ended = input("Date Ended MM/DD/YYYY: ")
+                while (check_date(experience_date_ended) == False or compare_dates(experience_date_started, experience_date_ended) == False):
+                    if (check_date(experience_date_ended) == False):
+                        experience_date_ended = input("Date not valid. Please Try Again: ")
+                    elif (compare_dates(experience_date_started, experience_date_ended) == False):
+                        experience_date_ended = input("End date is before start date. Please Try Again: ")
+
+                experience_location = input("Job Location: ")
+                experience_description = input("Job Description: ")
+                experience = experience + "(" + experience_title + "," + experience_employer + "," + experience_date_started + "," + experience_date_ended + "," + experience_location  + "," + experience_description + ")"
+                # Allows up to 3 experiences to be added
+                if (value < 2):
+                    new_experience = input("Do you have more experience to add? Enter YES/NO  ")
+                    while new_experience.upper() != "YES" and new_experience.upper() != "NO":
+                        new_experience = input("Invalid Input. Try Again: ")
+                if new_experience.upper() == "NO":
+                    break
+
+        school = input("\nEducation Information:\nEnter School Name: ")
+        degree = input("Enter Degree: ")
+        years = input("Enter the Years Attended: ")
+        education = "[" + school + "," + degree + "," + years + "]"
+
+        print("\nYour profile has been made.")
+        with open(FILENAME_PROFILE, "a") as file:
+            writer_csv = csv.writer(file)
+            writer_csv.writerow((name, title, major, university, biography, experience, education))
+
+    def view_profile(self, name):
+        with open(FILENAME_PROFILE, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != [] and item[0] == name:
+                    print()
+                    for row in self.student_list:
+                        if row.get_user_name() == name:
+                            print(row.get_name())
+                    print("Title: " + item[1])
+                    print("Major: " + item[2])
+                    print("University Name: " + item[3])
+                    print("About me: " + item[4])
+                    experience = item[5]
+                    experience_list = experience.split(")")
+                    print(experience_list)
+                    experience_list.pop()
+
+                    print()
+                    for element in experience_list:
+                        sub_element = element[1:]
+                        list_sub_experience = sub_element.split(",")
+                        print("Title: " + list_sub_experience[0])
+                        print("Job Description: " + list_sub_experience[5])
+                        print("Work: " + list_sub_experience[4])
+                        print("Start date: " + list_sub_experience[2])
+                        print("End date: " + list_sub_experience[3])
+                        print("Employer: " + list_sub_experience[1])
+
+                    print("\nMy Education Information:")
+                    education = item[6]
+                    len_education = len(education) - 1
+                    sub_education = education[1:len_education]
+
+                    list_sub_education = sub_education.split(",")
+                    print("University: " + list_sub_education[0])
+                    print("Major: " + list_sub_education[1])
+                    print("Years attended: " + list_sub_education[2])
+                    return name
+
+        print("\nProfile not created.")
+        return name
+
+
+#Functions to check dates
+def check_date(date_text):
+    try:
+        datetime.strptime(date_text, '%m/%d/%Y')
+        return True
+    except ValueError:
+        return False
+
+def compare_dates(date1, date2):
+    date1 = datetime.strptime(date1, '%m/%d/%Y')
+    date2 = datetime.strptime(date2, '%m/%d/%Y')
+    return date1<date2

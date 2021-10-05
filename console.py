@@ -3,8 +3,9 @@ import manage as m
 import utility
 import csv
 
-
+FILENAME_STUDENT = "student_data.csv"
 FILENAME_SETTINGS = "settings.csv"
+FILENAME_PROFILE = "profiles.csv"
 blank_string = " "
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
@@ -47,31 +48,45 @@ def Welcome_Page():
 def Login_Page(name):
     print()
     print("\nSelect one of the below options:")
-    print("1. Search for job/internship")
-    print("2. Post a Job")
-    print("3. Learn a New Skill")
-    print("4. Useful Links")
-    print("5. inCollege Important Links")
-    print("6. Log Out")
+    print("1. Create Profile")
+    print("2. View Profile")
+    print("3. Search for job/internship")
+    print("4. Post a Job")
+    print("5. Learn a New Skill")
+    print("6. Useful Links")
+    print("7. inCollege Important Links")
+    print("8. Log Out")
     decision = input("\nYour selection: ")
 
-    # Used for input validation. User should only choose a value 1-7
-    decision = utility.checkUserInput(decision, 1, 7)
+    # Used for input validation. User should only choose a value 1-8
+    decision = utility.checkUserInput(decision, 1, 8)
 
     if (decision == "1"):
-        print("\nUnder construction for now")
+        manage = m.Manage()
+        manage.create_profile(name)
+        decision = input("\n1. Return to previous screen. ")
+        decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
     elif (decision == "2"):
         manage = m.Manage()
-        manage.new_job(name)
+        manage.view_profile(name)
+        decision = input("\n1. Return to previous screen. ")
+        decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
     elif (decision == "3"):
-        LearnSkill_Page(name)
+        print("\nUnder construction for now")
+        Login_Page(name)
     elif (decision == "4"):
-        UsefulLinks_Page(1, name)
+        manage = m.Manage()
+        manage.new_job(name)
+        Login_Page(name)
     elif (decision == "5"):
-        ImportantLinks_Page(1, name)
+        LearnSkill_Page(name)
     elif (decision == "6"):
+        UsefulLinks_Page(1, name)
+    elif (decision == "7"):
+        ImportantLinks_Page(1, name)
+    elif (decision == "8"):
         Welcome_Page()
 
 
