@@ -20,8 +20,8 @@ class Profiles:
     def get_university(self):
         return self.university
 
-    def get_bio(self):
-        return self.bio
+    def get_biography(self):
+        return self.biography
 
     def get_experience(self):
         return self.experience
