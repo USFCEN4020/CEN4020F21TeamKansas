@@ -138,8 +138,10 @@ class TestClass:
 
         #########################################
 
+        ########### EPIC 4 ####################
+    def test_create_profile(self):
         stud2 = s.Student("TEST2", "P@ssword123", "Stefano", "Visentin")  # adds student
-        assert manage.add_student(stud2) == stud2.get_user_name()
+        assert ma.add_student(stud2) == stud2.get_user_name()
         pos = list()
         entry = [" ", " ", " ", " ", " "]
         arr = []
@@ -155,7 +157,7 @@ class TestClass:
                 for field in row:
                     if (field == "TEST2"):
                         entry = [pos[pos_count][0], pos[pos_count][1], pos[pos_count][2], pos[pos_count][3],
-                                 pos[pos_count][4]]
+                                pos[pos_count][4]]
                         pos.pop()
                         count -= 1
 
@@ -166,5 +168,37 @@ class TestClass:
         assert ("English" == entry[4])
 
         #########################################
+
+        stud2 = s.Student("TEST2", "P@ssword123", "Stefano", "Visentin")  # adds student
+        assert ma.add_student(stud2) == stud2.get_user_name()
+        pos = list()
+        entry = [" ", " ", " ", " ", " "]
+        arr = []
+        count = 0
+        pos_count = 0
+        with open(filename, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != arr:
+                    pos.append(row)
+                    count += 1
+                    pos_count = count - 1
+                for field in row:
+                    if (field == "TEST2"):
+                        entry = [pos[pos_count][0], pos[pos_count][1], pos[pos_count][2], pos[pos_count][3],
+                                pos[pos_count][4]]
+                        pos.pop()
+                        count -= 1
+
+        assert (stud2.get_user_name() == entry[0])  # adds student's settings into csv file
+        assert ("ON" == entry[1])
+        assert ("ON" == entry[2])
+        assert ("ON" == entry[3])
+        assert ("English" == entry[4])
+#I haven't tried to modify because I was trying to run a simple test like this:
+
+        testprofile1 = p.Profiles("matteovescera", "SWE", "Computer Science", "USF", "I am a student looking for internship", "No prior experience", "USF, BS in CS, 2022")
+        assert ma.create_profile("Matteo") == True
+        
 
 
