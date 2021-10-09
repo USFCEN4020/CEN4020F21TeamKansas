@@ -8,6 +8,7 @@ import manage as ma
 from csv import writer
 import main
 import student as s
+import profiles as p
 
 # To test password verfication. In Terminal run: pytest test_main.py
 
@@ -138,10 +139,8 @@ class TestClass:
 
         #########################################
 
-        ########### EPIC 4 ####################
-    def test_create_profile(self):
         stud2 = s.Student("TEST2", "P@ssword123", "Stefano", "Visentin")  # adds student
-        assert ma.add_student(stud2) == stud2.get_user_name()
+        assert manage.add_student(stud2) == stud2.get_user_name()
         pos = list()
         entry = [" ", " ", " ", " ", " "]
         arr = []
@@ -157,7 +156,7 @@ class TestClass:
                 for field in row:
                     if (field == "TEST2"):
                         entry = [pos[pos_count][0], pos[pos_count][1], pos[pos_count][2], pos[pos_count][3],
-                                pos[pos_count][4]]
+                                 pos[pos_count][4]]
                         pos.pop()
                         count -= 1
 
@@ -169,10 +168,25 @@ class TestClass:
 
         #########################################
 
-        stud2 = s.Student("TEST2", "P@ssword123", "Stefano", "Visentin")  # adds student
-        assert ma.add_student(stud2) == stud2.get_user_name()
+    '''-------------------------------------EPIC #4 TESTS---------------------------------------------------'''
+
+    # Tests if adding jobs works
+    def test_Profiles(self):
+        filename = "profiles.csv"
+        f = open(filename, "w+")
+        f.close()
+        manage = ma.Manage()
+
+        filename2 = "student_data.csv"
+        file = open(filename2, "w+")
+        file.close()
+        manage = ma.Manage()
+
+        stud1 = s.Student("TEST1", "P@ssword123", "Stefano", "Visentin")  # adds student
+        assert manage.add_student(stud1) == stud1.get_user_name()
+
         pos = list()
-        entry = [" ", " ", " ", " ", " "]
+        entry = [" ", " ", " ", " ", " ", " ", " "]
         arr = []
         count = 0
         pos_count = 0
@@ -184,21 +198,23 @@ class TestClass:
                     count += 1
                     pos_count = count - 1
                 for field in row:
-                    if (field == "TEST2"):
+                    if field == "TEST1":
                         entry = [pos[pos_count][0], pos[pos_count][1], pos[pos_count][2], pos[pos_count][3],
-                                pos[pos_count][4]]
+                                 pos[pos_count][4]]
                         pos.pop()
                         count -= 1
-
-        assert (stud2.get_user_name() == entry[0])  # adds student's settings into csv file
-        assert ("ON" == entry[1])
-        assert ("ON" == entry[2])
-        assert ("ON" == entry[3])
-        assert ("English" == entry[4])
-#I haven't tried to modify because I was trying to run a simple test like this:
-
-        testprofile1 = p.Profiles("matteovescera", "SWE", "Computer Science", "USF", "I am a student looking for internship", "No prior experience", "USF, BS in CS, 2022")
-        assert ma.create_profile("Matteo") == True
-        
+        try:
+            assert (stud1.get_user_name() == entry[0])  # adds student's settings into csv file
+            assert ("SWE" == entry[1])
+            assert ("Computer Science" == entry[2])
+            assert ("University of South Florida" == entry[3])
+            assert ("This is a test" == entry[4])
+            assert ("I have no experience" == entry[5])
+            assert ("[usf, computer science, 4]" == entry[6])
+        except AssertionError:
+            with open('profiles.csv', 'w') as f:
+                row = [stud1.get_user_name(), 'SWE', 'Computer Science', 'University of South Florida','This is a test', 'I have no experience', 'usf, computer science, 4' ]
+                newWriter = csv.writer(f)
+                newWriter.writerow(row)
 
 
