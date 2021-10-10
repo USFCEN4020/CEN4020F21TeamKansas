@@ -1,0 +1,811 @@
+import time
+import manage as m
+import utility
+import csv
+
+FILENAME_STUDENT = "student_data.csv"
+FILENAME_SETTINGS = "settings.csv"
+FILENAME_PROFILE = "profiles.csv"
+blank_string = " "
+
+# The screen is at the begin of the program, or after its options finish (log-in, sign up)
+def Welcome_Page():
+    print("\nWelcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
+    print("")
+    print("Are you a new user? Or do you already have an account? Select an option below")
+    print("1. Create an account")
+    print("2. Login to an existing account")
+    print("3. Connect with someone you know")
+    print("4. Play the video")
+    print("5. Useful Links")
+    print("6. InCollege Important Links")
+    print("7. Exit inCollege")
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-7
+    decision = utility.checkUserInput(decision, 1, 7)
+
+    if (decision == "1"):
+        Register_Page()
+    elif (decision == "2"):
+        manage = m.Manage()  # create a new object Manage
+        name = manage.login()  # get user's name after logging in successful
+        Login_Page(name)
+    elif (decision == "3"):
+        ConnectWithPeople_Page()
+    elif (decision == "4"):
+        print("\nVideo is now playing in 3 seconds!")
+        time.sleep(3)
+        Welcome_Page()
+    elif (decision == "5"):
+        UsefulLinks_Page(0, blank_string)
+    elif (decision == "6"):
+        ImportantLinks_Page(0, blank_string)
+    elif (decision == "7"):
+        return
+
+
+def Login_Page(name):
+    print()
+    print("\nSelect one of the below options:")
+    print("1. Create Profile")
+    print("2. View Profile")
+    print("3. Search for job/internship")
+    print("4. Post a Job")
+    print("5. Learn a New Skill")
+    print("6. Useful Links")
+    print("7. inCollege Important Links")
+    print("8. Log Out")
+    decision = input("\nYour selection: ")
+
+    # Used for input validation. User should only choose a value 1-8
+    decision = utility.checkUserInput(decision, 1, 8)
+
+    if (decision == "1"):
+        manage = m.Manage()
+        manage.create_profile(name)
+        decision = input("\n1. Return to previous screen. ")
+        decision = utility.checkUserInput(decision, 1, 1)
+        Login_Page(name)
+    elif (decision == "2"):
+        manage = m.Manage()
+        manage.view_profile(name)
+        decision = input("\n1. Return to previous screen. ")
+        decision = utility.checkUserInput(decision, 1, 1)
+        Login_Page(name)
+    elif (decision == "3"):
+        print("\nUnder construction for now")
+        Login_Page(name)
+    elif (decision == "4"):
+        manage = m.Manage()
+        manage.new_job(name)
+        Login_Page(name)
+    elif (decision == "5"):
+        LearnSkill_Page(name)
+    elif (decision == "6"):
+        UsefulLinks_Page(1, name)
+    elif (decision == "7"):
+        ImportantLinks_Page(1, name)
+    elif (decision == "8"):
+        Welcome_Page()
+
+
+# Displays 5 skills that the user can learn (all of which return "under construction"). The user is also allowed to not choose a skill, which will bring the user back to the welcome screen by calling welcomeScreen.
+def LearnSkill_Page(name):
+    print()
+    print("\nSelect one of the below options:")
+    print("1. Learn C")
+    print("2. Learn Java")
+    print("3. Learn Python")
+    print("4. Learn SQL")
+    print("5. Learn C++")
+    print("6. Return to Menu")
+    decision = input("\nYour selection: ")
+
+    # Used for input validation. User should only choose a value 1-6
+    decision = utility.checkUserInput(decision, 1, 6)
+
+    if (decision == "1"):
+        print("\nUnder construction for now")
+        LearnSkill_Page(name)
+    elif (decision == "2"):
+        print("\nUnder construction for now")
+        LearnSkill_Page(name)
+    elif (decision == "3"):
+        print("\nUnder construction for now")
+        LearnSkill_Page(name)
+    elif (decision == "4"):
+        print("\nUnder construction for now")
+        LearnSkill_Page(name)
+    elif (decision == "5"):
+        print("\nUnder construction for now")
+        LearnSkill_Page(name)
+    elif (decision == "6"):
+        Login_Page(name)
+
+
+def Register_Page():
+    manage = m.Manage()
+    name = manage.register()
+    if name != None:  # sign up successfully
+        Login_Page(name)
+    else:
+        print()
+        print("Select one of the below options:")
+        print("1. Create a New Account. ")
+        print("2. Go Back to Home Screen.")
+        decision = input("\nYour selection: ")
+
+        # Used for input validation. User should only choose a value 1-2
+        choice = utility.checkUserInput(decision, 1, 2)
+        if (decision == "1"):
+            Register_Page()
+        elif (decision == "2"):
+            Welcome_Page()
+
+
+def ConnectWithPeople_Page():
+    manage = m.Manage()
+    firstname = input("Enter friend's first name: ")
+    lastname = input("Enter friend's last name: ")
+    manage.find_people(firstname, lastname)
+    print("\nSelect one of the below options:")
+    print("1. Login")
+    print("2. Create a New Account.")
+    print("3. Go Back to Home Screen.")
+    decision = input("\nYour selection: ")
+
+    # Used for input validation. User should only choose a value 1-3
+    decision = utility.checkUserInput(decision, 1, 3)
+
+    if (decision == "1"):
+        manage = m.Manage()
+        name = manage.login()
+
+        if name == None:
+            Welcome_Page()
+        else:  # log in successfully
+            Login_Page(name)
+
+    elif (decision == "2"):
+        Register_Page()
+    elif (decision == "3"):
+        Welcome_Page()
+
+def ImportantLinks_Page(value, name):
+    print("\nInCollege Important Links. Select one of the below options:")
+    print("1. A Copyright Notice")
+    print("2. About")
+    print("3. Accessibility")
+    print("4. User Agreement")
+    print("5. Privacy Policy")
+    print("6. Cookie Policy")
+    print("7. Copyright Policy")
+    print("8. Brand Policy")
+    print("9. Go Back to Previous Screen")
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-9
+    decision = utility.checkUserInput(decision, 1, 9)
+
+    if (decision == "1"):
+        print("\nA Copyright Notice: Copyright © 2021 by Team Kansas. All rights reserved.")
+        ImportantLinks_Page(value, name)
+    elif (decision == "2"):
+        print("\nAbout inCollege: inCollege is the best application designed for college students hoping to connect with other college students in effort to land a job!")
+        ImportantLinks_Page(value, name)
+    elif (decision == "3"):
+        print("\nAccessibility: We are committed to making accessibility a core consideration from the every stage and update of inCollege.")
+        ImportantLinks_Page(value, name)
+    elif (decision == "4"):
+        print("\nUser Agreement: With agreement to registerign an account and signing in, the user complies with terms and conditions for inCollege.")
+        ImportantLinks_Page(value, name)
+    elif (decision == "5"):
+        print("\nOur privacy policy explains how we treat your personal data and protect your privacy when you use our Services. By using our Services, you agree that inCollege can use such data in accordance with our privacy policy.")
+        PrivacyPolicy_Page(value, name)
+    elif (decision == "6"):
+        print("\nCookie Policy: Chocolate Chip Cookies or Rainbow Sprinkle Cookies?")
+        ImportantLinks_Page(value, name)
+    elif (decision == "7"):
+        print("\nCopyright Policy: We own all things inCollege.")
+        ImportantLinks_Page(value, name)
+    elif (decision == "8"):
+        print("\nBrand Policy: This policy governs the use of all inCollege trademarks (see definition) for any purpose. Consistency in the use of inCollege trademarks strengthens their value and our ability to protect them from unauthorized use. The inCollege should be consulted whenever it is not clear whether a proposed use is permissible.")
+        ImportantLinks_Page(value, name)
+    elif (decision == "9"):
+        if value == 0:
+            Welcome_Page()
+        elif value == 1:
+            Login_Page(name)
+
+
+def PrivacyPolicy_Page(value, name):
+
+    if value == 0:
+        print("\nSign in for Guest Controls and Language Features")
+        print("1. Go back to InCollege Important links")
+        decision = input("Your selection: ")
+
+        # check the right value of input from user
+        decision = utility.checkUserInput(decision, 1, 1)
+
+        if (decision  == "1"):
+            ImportantLinks_Page(value, name)
+
+    # A Signed in user will get the option to access guest controls and Language
+    elif value == 1:
+        print()
+        print("\nPrivacy Policy - Select one of the below options:")
+        print("1. Guest Controls")
+        print("2. Language")
+        print("3. Go back to InCollege Important Links")
+        decision = input("Your selection: ")
+
+        # Used for input validation. User should only choose a value 1-3
+        decision = utility.checkUserInput(decision, 1, 3)
+
+        if (decision  == "1"):
+            GuestControls_Page(value, name)
+        elif (decision  == "2"):
+            Language_Page(value, name)
+        elif (decision  == "3"):
+            ImportantLinks_Page(value, name)
+
+def GuestControls_Page(value, name):
+
+    toggle = [" ", " ", " ", " ", " "]
+    lines = list()
+    empty = []
+    count = 0
+
+    # Reads current language setting and then populates empty list called lines with info
+    with open(FILENAME_SETTINGS, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for item in reader:
+            # used to fix spacing
+            if item != empty:
+                lines.append(item)
+                count = count + 1
+            for space in item:
+                if (space == name):
+                    toggle = [lines[count-1][0], lines[count-1][1], lines[count-1][2], lines[count-1][3], lines[count-1][4]]
+                    lines.pop()
+                    count = count - 1
+
+    print("\nEmail Feature is currently", toggle[1])
+    print("SMS Feature is currently", toggle[2])
+    print("Targeted Advertising Feature is currently", toggle[3])
+
+    print("\nSelect one of the below options:")
+    print("1. Toggle ON/OFF Email Feature")
+    print("2. Toggle ON/OFF SMS Feature")
+    print("3. Toggle ON/OFF Targeted Advertising Feature")
+    print("4. Go back to Privacy Policy")
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-4
+    decision = utility.checkUserInput(decision, 1, 4)
+
+    if (decision == "1"):
+        if (toggle[1] == "ON"):
+            toggle[1] = "OFF"
+        else:
+            toggle[1] = "ON"
+        lines.append(toggle)
+
+        # overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        GuestControls_Page(value, name)
+
+    elif (decision == "2"):
+        if (toggle[2] == "ON"):
+            toggle[2] = "OFF"
+        else:
+            toggle[2] = "ON"
+        lines.append(toggle)
+        #overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        GuestControls_Page(value, name)
+    elif (decision == "3"):
+        if (toggle[3] == "ON"):
+            toggle[3] = "OFF"
+        else:
+            toggle[3] = "ON"
+        lines.append(toggle)
+
+        # overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        GuestControls_Page(value, name)
+    elif (decision == "4"):
+        PrivacyPolicy_Page(value, name)
+
+
+# Name is username of the user so each user has their own settings
+def Language_Page(value, name):
+
+    #helper variables
+    lines = list()
+    toggle = [" ", " ", " ", " ", " "]
+    blank = []
+    count = 0
+
+    #read current language setting and fill 'lines' with info
+    with open(FILENAME_SETTINGS, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for item in reader:
+            if item != blank: # or else there will be stupid amount of white space
+                lines.append(item)
+                count = count + 1
+            for field in item:
+                if (field == name):
+                    toggle = [lines[count-1][0], lines[count-1][1], lines[count-1][2], lines[count-1][3], lines[count-1][4]]
+                    lines.pop()
+                    count = count - 1
+
+    print()
+    print("Your Language is currently set to", toggle[4])
+    print("Select one of the below options:")
+    print("1. Set to your language to English")
+    print("2. Set to your language to Spanish")
+    print("3. Go back to Privacy Policy")
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-4
+    decision = utility.checkUserInput(decision, 1, 3)
+
+    if (decision == "1"):
+        toggle[4] = "English"
+        lines.append(toggle)
+
+        #overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        Language_Page(value, name)
+
+    elif (decision == "2"):
+        toggle [4] = "Spanish"
+        lines.append(toggle)
+        #overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        Language_Page(value, name)
+
+    elif (decision == "3"):
+        lines.append(toggle)
+
+        # Adds toggle to list
+        # overwrite
+        with open(FILENAME_SETTINGS, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            for row in lines:
+                writer.writerow(row)
+        PrivacyPolicy_Page(value, name)
+
+
+def UsefulLinks_Page(value, name):
+    print("\nSelect one of the below options:")
+    print("(1) General")
+    print("(2) Browse InCollege")
+    print("(3) Business solutions")
+    print("(4) Directories")
+    print("(5) Go back to previous screen")
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-4
+    decision = utility.checkUserInput(decision, 1, 5)
+
+    if (decision == "1"):
+        GeneralLinks_Page(value,name)
+    elif (decision == "2"):
+        print("\nUnder construction")
+        UsefulLinks_Page(value, name)
+    elif (decision == "3"):
+        print("\nUnder construction")
+        UsefulLinks_Page(value, name)
+    elif (decision == "4"):
+        print("\nUnder construction")
+        UsefulLinks_Page(value,name)
+    elif (decision == "5"):
+        if value == 0:
+            Welcome_Page()
+        elif value == 1:
+            Login_Page(name)
+
+
+def GeneralLinks_Page(value, name):
+    print()
+    print("Select one of the below options:")
+    print("1. Sign up")
+    print("2. Help Center")
+    print("3. About")
+    print("4. Press")
+    print("5. Blog")
+    print("6. Careers")
+    print("7. Developers")
+    print("8. Back to Useful Links")
+
+    decision = input("Your selection: ")
+
+    # Used for input validation. User should only choose a value 1-4
+    decision = utility.checkUserInput(decision, 1, 8)
+
+    if (decision == "1"):
+        Register_Page()
+    elif (decision == "2"):
+        print("\nWe're here to help!")
+        GeneralLinks_Page(value, name)
+    elif (decision == "3"):
+        print("\nIn College: Welcome to In College, the world's largest college student network with many users in many countries and territories worldwide.")
+        GeneralLinks_Page(value, name)
+    elif (decision == "4"):
+        print("\nIn College Pressroom: Stay on top of the latest news, updates, and reports." )
+        GeneralLinks_Page(value, name)
+    elif (decision == "5"):
+        print("\nUnder construction")
+        GeneralLinks_Page(value, name)
+    elif (decision == "6"):
+        print("\nUnder construction")
+        GeneralLinks_Page(value, name)
+    elif (decision == "7"):
+        print("\nUnder construction")
+        GeneralLinks_Page(value, name)
+    elif (decision == "8"):
+        UsefulLinks_Page(value, name)
+        
+        
+###########################################################################################################
+
+import student as s
+import csv
+import os.path
+import utility
+import job as j
+import settings as set
+import profiles as p
+from datetime import datetime
+
+FILENAME_STUDENT = "student_data.csv"
+FILENAME_JOB = "job_data.csv"
+FILENAME_SETTINGS = "settings.csv"
+FILENAME_PROFILE = "profiles.csv"
+
+
+class Manage:
+    def __init__(self):
+        self.student_list = []
+        self.job_list = []
+        self.settings_list = []
+        self.profiles_list = []
+
+        # student_data.csv
+        if not os.path.isfile(FILENAME_STUDENT):
+            with open(FILENAME_STUDENT,'a') as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("User_Name", "Password", "First_Name", "Last_Name"))
+
+        # Add data from student_data.csv to student_list
+        with open(FILENAME_STUDENT,'r') as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.student_list.append(s.Student(item[0], item[1], item[2], item[3]))
+
+
+        # Add a Title to the job_data.csv
+        if not os.path.isfile(FILENAME_JOB):
+            with open(FILENAME_JOB,'a') as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Poster_Name"))
+
+        # Add data from job_data to job_list
+        with open(FILENAME_JOB,'r') as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.job_list.append(j.Job(item[0], item[1], item[2], item[3], item[4], item[5]))
+
+        # Adds titles for the settings.csv
+        if not os.path.isfile(FILENAME_SETTINGS):
+            with open(FILENAME_SETTINGS, "w") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
+
+        # Adds data from settings.csv to settings_list
+        with open(FILENAME_SETTINGS, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.settings_list.append(set.Settings(item[0],item[1], item[2], item[3], item[4]))
+
+        # Adds titles for the profiles.csv
+        if not os.path.isfile(FILENAME_PROFILE):
+            with open(FILENAME_PROFILE, "w") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow(("user", "title", "major", "university", "biography", "experience", "education"))
+
+        # Adds data from profiles.csv to profiles_list
+        with open(FILENAME_PROFILE, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != []:
+                    self.profiles_list.append(p.Profiles(item[0], item[1], item[2], item[3], item[4], item[5], item[6]))
+
+
+    def get_list(self):
+        return self.student_list
+
+
+    def get_length(self):
+        return len(self.student_list)
+
+
+    def login(self):
+        # creates a new Manage object
+        manage = Manage()
+
+        if len(manage.get_list()) == 1:
+            print("\nThere aren't any accounts.")
+            print("Create a New account to proceed.\n")
+            return None
+
+        # create an object of class AccountExistClass
+        account = utility.AccountExistClass()
+
+        user_name = input("Enter username: ")
+
+        # Checks if the username exists in student_data.csv file
+        while not account.check_name(user_name):
+            user_name = input("Enter user name again: ")
+
+        # Currently assume that the user exists
+        password = input("Enter a password: ")
+        while not account.check_password(user_name, password):
+            password = input("Incorrect password. Please try again: ")
+
+        print("\nYou have successfully logged in.")
+        return user_name
+
+    def register(self):
+        manage = Manage()
+        # User input to create a new account
+        username = input("Enter username: ")
+        password = input ("Enter a password: ")
+        firstname = input("Enter first name: ")
+        lastname = input("Enter last name: ")
+
+        # Creates a new object of class AccountPasswordClass
+        account = utility.AccountPasswordClass()
+
+        # Checks password validation requirements
+        while not(account.check_min_characters(password)) or not(account.check_max_characters(password)) or not(account.check_Uppercase_letter(password)) or not(account.check_non_alpha(password)) or not(account.check_digit(password)):
+            password = input("Enter a password again: ")
+
+        # Create a new student object and add it to the student_data.csv file
+        student = s.Student(username, password, firstname, lastname)
+        return manage.add_student(student)
+
+
+    def find_people(self, first, last):
+        manage = Manage()
+        name = first + " " + last
+        # Checks if a friend is in InCollege
+        for item in manage.student_list:
+            if item.get_name() == name:
+                print("\nThey are a part of the InCollege system.")
+                return item.get_user_name()
+
+        print("\nThey are not yet a part of the InCollege system yet.")
+        return None
+
+    def add_job(self, job, n):
+        if len(self.job_list) >= 5:
+            print("\nYou cannot post anymore jobs. Limited to 5.")
+            return None
+
+        else:
+            self.job_list.append(job)
+            print("\nJob has been posted.")
+            with open(FILENAME_JOB,"a") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow((job.get_title(), job.get_description(), job.get_employer(), job.get_location(), job.get_salary(), job.get_poster_name()))
+
+            return(job.get_poster_name())
+
+
+    def new_job(self, poster_name):
+        manage = Manage()
+
+        title = input("Enter Job Title: ")
+        description = input("Enter Job Description: ")
+        employer = input("Enter The Employer: ")
+        location = input("Enter Job Location: ")
+        salary = input("Enter Job Salary: ")
+
+        account = utility.InputValueClass()
+        # Check if the salary is correct
+        while not account.check_isNumber(salary):
+            print("Please input a valid salary.")
+            salary = input("Salary: ")
+
+        job = j.Job(title, description, employer, location, salary, poster_name)
+        return manage.add_job(job,poster_name)
+
+    # Adds a new object student with first name, last name and password to student_data.csv file
+    def add_student(self, student):
+        for item in self.student_list:
+            if item.get_user_name() == student.get_user_name():
+                print("\nThere is an account with the same username")
+                print("Try again!")
+                return None
+
+        if len(self.student_list) < 5:
+            self.student_list.append(student)
+            user_name = student.get_user_name()
+            print("Account successfully created.")
+
+            with open(FILENAME_STUDENT, "a") as file:
+                writer_csv = csv.writer(file)
+                writer_csv.writerow((student.get_user_name(), student.get_password(), student.get_first(), student.get_last()))
+
+            # Sets the default settings for the user.
+            with open(FILENAME_SETTINGS, "a") as file_stg:
+                writer_csv = csv.writer(file_stg)
+                writer_csv.writerow((user_name, "ON", "ON", "ON", "English"))
+
+            return user_name
+
+        else:
+            print("\nAll accounts have been created. Can't add anymore.")
+            return None
+
+    def manage_settings(self, username, field, state):
+        manage = Manage()
+        # find the settings object associated with that user
+        for toggleitem in manage.settings_list:
+            if toggleitem.get_user() == username:
+                if field == "email_notifications":
+                    return toggleitem.get_email_notifications()
+                elif field == "sms_notifications":
+                    return toggleitem.get_sms_notifications()
+                elif field == "targeted_ads":
+                    return toggleitem.get_targeted_ads()
+                elif field == "language_set":
+                    return toggleitem.get_language()
+                else:
+                    print("This field in the Guest Controls/Settings do not exist")
+                    return "NONE"
+
+        # Settings are only made when a user is created. Check if it returns the user's username
+        print("The user Does Not Exist.")
+        return toggleitem.get_user()
+
+    # Create profile function
+    def create_profile(self, name):
+        title = input("Enter a Title: ")
+        major = input("Enter a Major: ")
+        major = major.title()
+        university = input("Enter University: ")
+        university = university.title()
+        biography = input("About Yourself: ")
+
+        check_experience = input("Do you have any experience you would like to add? (Yes/No)  ")
+        experience = ""
+
+        while check_experience.upper() != "YES" and check_experience.upper() != "NO":
+            check_experience = input("Invalid Input. Please Try Again. Do you have any experience you would like to add? (Yes/No) ")
+
+        if check_experience.upper() == "YES":
+            for value in range(3):
+                experience_title = input("Job Title: ")
+                experience_employer = input("Employer: ")
+                experience_date_started = input("Date Started MM/DD/YYYY: ")
+                while (check_date(experience_date_started) == False):
+                    experience_date_started = input("Date not valid. Please Try Again: ")
+                experience_date_ended = input("Date Ended MM/DD/YYYY: ")
+                while (check_date(experience_date_ended) == False or compare_dates(experience_date_started, experience_date_ended) == False):
+                    if (check_date(experience_date_ended) == False):
+                        experience_date_ended = input("Date not valid. Please Try Again: ")
+                    elif (compare_dates(experience_date_started, experience_date_ended) == False):
+                        experience_date_ended = input("End date is before start date. Please Try Again: ")
+
+                experience_location = input("Job Location: ")
+                experience_description = input("Job Description: ")
+                experience = experience + "(" + experience_title + "," + experience_employer + "," + experience_date_started + "," + experience_date_ended + "," + experience_location  + "," + experience_description + ")"
+                # Allows up to 3 experiences to be added
+                if (value < 2):
+                    new_experience = input("Do you have more experience to add? Enter YES/NO  ")
+                    while new_experience.upper() != "YES" and new_experience.upper() != "NO":
+                        new_experience = input("Invalid Input. Try Again: ")
+                if new_experience.upper() == "NO":
+                    break
+
+        school = input("\nEducation Information:\nEnter School Name: ")
+        degree = input("Enter Degree: ")
+        years = input("Enter the Years Attended: ")
+        education = "[" + school + "," + degree + "," + years + "]"
+
+        print("\nYour profile has been made.")
+        with open(FILENAME_PROFILE, "a") as file:
+            writer_csv = csv.writer(file)
+            writer_csv.writerow((name, title, major, university, biography, experience, education))
+
+    def view_profile(self, name):
+        with open(FILENAME_PROFILE, "r") as file:
+            reader_csv = csv.reader(file)
+            for item in reader_csv:
+                if item != [] and item[0] == name:
+                    print()
+                    for row in self.student_list:
+                        if row.get_user_name() == name:
+                            print(row.get_name())
+                    print("Title: " + item[1])
+                    print("Major: " + item[2])
+                    print("University Name: " + item[3])
+                    print("About me: " + item[4])
+                    experience = item[5]
+                    experience_list = experience.split(")")
+                    print(experience_list)
+                    experience_list.pop()
+
+                    print()
+                    for element in experience_list:
+                        sub_element = element[1:]
+                        list_sub_experience = sub_element.split(",")
+                        print("Title: " + list_sub_experience[0])
+                        print("Job Description: " + list_sub_experience[5])
+                        print("Work: " + list_sub_experience[4])
+                        print("Start date: " + list_sub_experience[2])
+                        print("End date: " + list_sub_experience[3])
+                        print("Employer: " + list_sub_experience[1])
+
+                    print("\nMy Education Information:")
+                    education = item[6]
+                    len_education = len(education) - 1
+                    sub_education = education[1:len_education]
+
+                    list_sub_education = sub_education.split(",")
+                    print("University: " + list_sub_education[0])
+                    print("Major: " + list_sub_education[1])
+                    print("Years attended: " + list_sub_education[2])
+                    return name
+
+        print("\nProfile not created.")
+        return name
+
+
+#Functions to check dates
+def check_date(date_text):
+    try:
+        datetime.strptime(date_text, '%m/%d/%Y')
+        return True
+    except ValueError:
+        return False
+
+def compare_dates(date1, date2):
+    date1 = datetime.strptime(date1, '%m/%d/%Y')
+    date2 = datetime.strptime(date2, '%m/%d/%Y')
+    return date1<date2
+
+
+###############################################################################33
+
+
+
+
+
+
+
+
