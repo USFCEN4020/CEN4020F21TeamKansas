@@ -11,7 +11,8 @@ FILENAME_STUDENT = "student_data.csv"
 FILENAME_JOB = "job_data.csv"
 FILENAME_SETTINGS = "settings.csv"
 FILENAME_PROFILE = "profiles.csv"
-
+FILENAME_FRIEND = "friends.csv"
+FILENAME_FRIEND = "requests.csv"
 
 class Manage:
     def __init__(self):
@@ -328,3 +329,87 @@ def compare_dates(date1, date2):
     date1 = datetime.strptime(date1, '%m/%d/%Y')
     date2 = datetime.strptime(date2, '%m/%d/%Y')
     return date1<date2
+
+
+def add_friend(self, s1, s2):
+    with open(FILENAME_FRIEND, "a") as file:
+        writer_csv = csv.writer(file)
+        writer_csv.writerow((s1, s2))
+        writer_csv.writerow((s2, s1))
+
+
+def return_students(self, name):
+    blank = []
+    count = 0
+    lines = list()
+    results = list()
+
+    # read current students and fill lines with relavent student
+    with open(FILENAME_STUDENT, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if row != blank:
+                lines.append(row)
+                count += 1
+
+                if lines[count-1][3] == name:
+                    results.append(row)
+
+        return results
+
+
+def return_names_last(self, last):
+    blank = []
+    count = 0
+    lines = list()
+    names = list()
+    # read current students and fill lines with relavent student
+    with open(FILENAME_STUDENT, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if row != blank:
+                lines.append(row)
+                count += 1
+
+                if lines[count-1][3] == last:
+                    names.append(row)
+
+        return names
+
+
+def return_names_uni(self, uni):
+    blank = []
+    count = 0
+    lines = list()
+    names = list()
+    # read current students and fill lines with relavent student
+    with open(FILENAME_PROFILE, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if row != blank:
+                lines.append(row)
+                count += 1
+
+                if lines[count - 1][3] == uni:
+                    names.append(row)
+
+        return names
+
+
+def return_names_major(self, major):
+    blank = []
+    count = 0
+    lines = list()
+    names = list()
+    # read current students and fill lines with relavent student
+    with open(FILENAME_PROFILE, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if row != blank:
+                lines.append(row)
+                count += 1
+
+                if lines[count - 1][3] == major:
+                    names.append(row)
+
+        return names
