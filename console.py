@@ -6,6 +6,8 @@ import csv
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_SETTINGS = "settings.csv"
 FILENAME_PROFILE = "profiles.csv"
+FILENAME_FRIEND = "friends.csv"
+FILENAME_FRIEND = "requests.csv"
 blank_string = " "
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
@@ -464,3 +466,27 @@ def GeneralLinks_Page(value, name):
         GeneralLinks_Page(value, name)
     elif (decision == "8"):
         UsefulLinks_Page(value, name)
+
+
+def search_friend(name):
+    manage = m.Manage()
+    sent = 0
+    choice = 0
+
+    while sent == 0:
+        results = list()
+        entry = [" ", " ", " ", " ", " "]
+        print("Select one of the options to search for friend")
+        print("1. Search by last name")
+        print("2. Search by University")
+        print("3. Search by Major")
+        print("4. Return to previous page")
+        choice = input("Your selection: ")
+
+        # check user input
+        choice = utility.checkUserInput(choice, 1, 7)
+
+        if choice == "1":
+            last = input("Enter last name: ")
+            name = list()
+            name = manage.return_name_last(last)
