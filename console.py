@@ -7,7 +7,7 @@ FILENAME_STUDENT = "student_data.csv"
 FILENAME_SETTINGS = "settings.csv"
 FILENAME_PROFILE = "profiles.csv"
 FILENAME_FRIEND = "friends.csv"
-FILENAME_FRIEND = "requests.csv"
+FILENAME_REQUEST = "requests.csv"
 blank_string = " "
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
@@ -468,7 +468,7 @@ def GeneralLinks_Page(value, name):
         UsefulLinks_Page(value, name)
 
 
-def search_friend(name):
+def search_friend(sname):
     manage = m.Manage()
     sent = 0
     choice = 0
@@ -489,15 +489,15 @@ def search_friend(name):
         if choice == "1":
             last = input("Enter last name: ")
             names = list()
-            names = manage.return_names_last(last)
+            names = manage.return_names(last)
             for uname in names:
                 partial_results = list()
-                partial_results = manage.return_students_name(uname)
+                partial_results = manage.return_students(uname)
                 for entry in partial_results:
                     results.append(entry)
             for row in results:
                 print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(name, names)
+            manage.send_requests(sname, names)
         elif choice == "2":
             univ = input("Enter University: ")
             print()
@@ -509,7 +509,7 @@ def search_friend(name):
                     results.append(entry)
             for row in results:
                 print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(name, names)
+            manage.send_requests(sname, names)
         elif choice == "3":
             major = input("Enter Major: ")
             print()
@@ -521,7 +521,69 @@ def search_friend(name):
                     results.append(entry)
             for row in results:
                 print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(name, names)
+            manage.send_requests(sname, names)
         elif choice == "4":
             sent = 1
 
+
+def check_requests(sname):
+    manage = m.Manage()
+    blank = []
+    count1 = 0
+    count2 = 0
+    req = 0
+    add1 = list()
+    add2 = list()
+    super_lines = list()
+    lines1 = list()
+    lines2 = list()
+
+    with open(FILENAME_REQUEST, 'r') as readFile:
+        reader2 = csv.reader(readFile)
+        for row2 in reader2:
+            if row2 != blank:
+                lines2.append(row2)
+                count2 += 1
+                if lines2[count2 - 1][1] == sname:
+                    req += 1
+
+    if req > 0:
+        print("You have one or more pending friend requests. Review them?")
+        print("0. No")
+        print("1. Yes")
+        choice = input("Your selection: ")
+        # check that user provided acceptable input
+        choice = utility.checkUserInput(choice, 0, 1)
+        if choice == "1":
+            with open(FILENAME_REQUEST, 'r') as readFile:
+                reader = csv.reader(readFile)
+                for row in reader:
+                    if row != blank:
+                        if row[1] != sname:
+                            super_lines.append(row)
+
+            with open(FILENAME_REQUEST, 'r') as readFile:
+                reader = csv.reader(readFile)
+                for row in reader:
+                    if row != blank:
+                        lines1.append(row)
+                        count1 += 1
+                        if lines1[count1 - 1][1] == sname:
+                            print()
+                            print("You have a pending friend request from " + lines[count - 1][0])
+                            print("Do you accept it? Enter '1' for yes and '0' for no")
+                            accept = input("Your selection: ")
+                            accept = utility.checkUserInput(accept, 0, 1)
+                            if accept == "1":
+                                add1.append(sname)
+                                add2.append(lines1[count - 1][0])
+
+            i = 0
+            while i < len(add1):
+                manage.add_friend(add1[i], add2[i])
+                i = i + 1
+
+            with open(FILENAME_REQUEST, "w") as writeFile:
+                writer = csv.writer(writeFile)
+                for line in super_lines:
+                    writer.writerow(line)

@@ -316,8 +316,127 @@ class Manage:
         print("\nProfile not created.")
         return name
 
+    def add_friend(self, s1, s2):
+        with open(FILENAME_FRIEND, "a") as file:
+            writer_csv = csv.writer(file)
+            writer_csv.writerow((s1, s2))
+            writer_csv.writerow((s2, s1))
 
-#Functions to check dates
+    def return_students(self, name):
+        blank = []
+        count = 0
+        lines = list()
+        results = list()
+
+        # read current students and fill lines with relavent student
+        with open(FILENAME_STUDENT, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count += 1
+
+                    if lines[count - 1][3] == name:
+                        results.append(row)
+
+            return results
+
+    def return_names(self, last):
+        blank = []
+        count = 0
+        lines = list()
+        names = list()
+        # read current students and fill lines with relavent student
+        with open(FILENAME_STUDENT, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count += 1
+
+                    if lines[count - 1][3] == last:
+                        names.append(row)
+
+            return names
+
+    def return_names_uni(self, uni):
+        blank = []
+        count = 0
+        lines = list()
+        names = list()
+        # read current students and fill lines with relavent student
+        with open(FILENAME_PROFILE, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count += 1
+
+                    if lines[count - 1][3] == uni:
+                        names.append(row)
+
+            return names
+
+    def return_names_major(self, major):
+        blank = []
+        count = 0
+        lines = list()
+        names = list()
+        # read current students and fill lines with relavent student
+        with open(FILENAME_PROFILE, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count += 1
+
+                    if lines[count - 1][3] == major:
+                        names.append(row)
+
+            return names
+
+    def send_requests(self, sname, unames):
+        blank = []
+        try:
+            unames.remove(sname)
+        except ValueError:
+            gar = 0
+        if len(unames) == 0:
+            print("No students found")
+            print()
+        else:
+            dup = 0
+            print("Request to connect?")
+            print("0. No.")
+            print("1. Yes")
+            for uname in unames:
+                choice = input(uname + "?: ")
+                choice = utility.checkUserInput(choice, 0, 1)
+                if choice == "1":
+                    with open(FILENAME_REQUEST, 'r') as readFile:
+                        reader = csv.reader(readFile)
+                        for row in reader:
+                            if row != blank:
+                                if row[0] == sname and row[1] == uname:
+                                    dup = dup + 1
+
+                    with open(FILENAME_FRIEND, 'r') as readFile2:
+                        reader2 = csv.reader(readFile2)
+                        for row in reader2:
+                            if row != blank:
+                                if row[0] == sname and row[1] == uname:
+                                    dup = dup + 1
+
+                    if dup == 0:
+                        with open(FILENAME_REQUEST, "a") as file:
+                            writer_csv = csv.writer(file)
+                            writer_csv.writerow((sname, uname))
+                        print("Connection Request Sent")
+                    else:
+                        print("Friend request was sent or accepted")
+
+
+# Functions to check dates
 def check_date(date_text):
     try:
         datetime.strptime(date_text, '%m/%d/%Y')
@@ -325,132 +444,10 @@ def check_date(date_text):
     except ValueError:
         return False
 
+
 def compare_dates(date1, date2):
     date1 = datetime.strptime(date1, '%m/%d/%Y')
     date2 = datetime.strptime(date2, '%m/%d/%Y')
     return date1<date2
 
-
-def add_friend(self, s1, s2):
-    with open(FILENAME_FRIEND, "a") as file:
-        writer_csv = csv.writer(file)
-        writer_csv.writerow((s1, s2))
-        writer_csv.writerow((s2, s1))
-
-
-def return_students(self, name):
-    blank = []
-    count = 0
-    lines = list()
-    results = list()
-
-    # read current students and fill lines with relavent student
-    with open(FILENAME_STUDENT, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if row != blank:
-                lines.append(row)
-                count += 1
-
-                if lines[count-1][3] == name:
-                    results.append(row)
-
-        return results
-
-
-def return_names_last(self, last):
-    blank = []
-    count = 0
-    lines = list()
-    names = list()
-    # read current students and fill lines with relavent student
-    with open(FILENAME_STUDENT, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if row != blank:
-                lines.append(row)
-                count += 1
-
-                if lines[count-1][3] == last:
-                    names.append(row)
-
-        return names
-
-
-def return_names_uni(self, uni):
-    blank = []
-    count = 0
-    lines = list()
-    names = list()
-    # read current students and fill lines with relavent student
-    with open(FILENAME_PROFILE, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if row != blank:
-                lines.append(row)
-                count += 1
-
-                if lines[count - 1][3] == uni:
-                    names.append(row)
-
-        return names
-
-
-def return_names_major(self, major):
-    blank = []
-    count = 0
-    lines = list()
-    names = list()
-    # read current students and fill lines with relavent student
-    with open(FILENAME_PROFILE, 'r') as readFile:
-        reader = csv.reader(readFile)
-        for row in reader:
-            if row != blank:
-                lines.append(row)
-                count += 1
-
-                if lines[count - 1][3] == major:
-                    names.append(row)
-
-        return names
-
-
-def send_requests(self, sign_name, unames):
-    blank = []
-    try:
-        unames.remove(sign_name)
-    except ValueError:
-        gar = 0
-    if len(unames) == 0:
-        print("No students found")
-        print()
-    else:
-        duplicates = 0
-        print("Enter '1' for yes and '0' for no.")
-        print("Do you wish to send a request to connect to:")
-        for uname in unames:
-            choice = input(uname + "?: ")
-            choice = utility.check_option(choice, 0, 1)
-            if choice == "1":
-                with open(FILENAME_REQUEST, 'r') as readFile:
-                    reader = csv.reader(readFile)
-                    for row in reader:
-                        if row != blank:
-                            if row[0] == sign_name and row[1] == uname:
-                                duplicates = duplicates + 1
-
-                with open(FILENAME_FRIEND, 'r') as readFile2:
-                    reader2 = csv.reader(readFile2)
-                    for row in reader2:
-                        if row != blank:
-                            if row[0] == sign_name and row[1] == uname:
-                                duplicates = duplicates + 1
-
-                if duplicates == 0:
-                    with open(FILENAME_REQUEST, "a") as file:
-                        writer_csv = csv.writer(file)
-                        writer_csv.writerow((sign_name, uname))
-                    print("Request to connect sent")
-                else:
-                    print("Friend request has already been sent or accepted")
 
