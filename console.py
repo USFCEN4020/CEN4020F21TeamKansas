@@ -484,9 +484,44 @@ def search_friend(name):
         choice = input("Your selection: ")
 
         # check user input
-        choice = utility.checkUserInput(choice, 1, 7)
+        choice = utility.checkUserInput(choice, 1, 4)
 
         if choice == "1":
             last = input("Enter last name: ")
-            name = list()
-            name = manage.return_name_last(last)
+            names = list()
+            names = manage.return_names_last(last)
+            for uname in names:
+                partial_results = list()
+                partial_results = manage.return_students_name(uname)
+                for entry in partial_results:
+                    results.append(entry)
+            for row in results:
+                print(row[0] + ": " + row[2] + " " + row[3])
+            manage.send_requests(name, names)
+        elif choice == "2":
+            univ = input("Enter University: ")
+            print()
+            names = manage.return_names_uni(univ)
+            for uname in names:
+                partial_results = list()
+                partial_results = manage.return_students(uname)
+                for entry in partial_results:
+                    results.append(entry)
+            for row in results:
+                print(row[0] + ": " + row[2] + " " + row[3])
+            manage.send_requests(name, names)
+        elif choice == "3":
+            major = input("Enter Major: ")
+            print()
+            names = manage.return_names_major(major)
+            for uname in names:
+                partial_results = list()
+                partial_results = manage.return_students(uname)
+                for entry in partial_results:
+                    results.append(entry)
+            for row in results:
+                print(row[0] + ": " + row[2] + " " + row[3])
+            manage.send_requests(name, names)
+        elif choice == "4":
+            sent = 1
+

@@ -12,7 +12,7 @@ FILENAME_JOB = "job_data.csv"
 FILENAME_SETTINGS = "settings.csv"
 FILENAME_PROFILE = "profiles.csv"
 FILENAME_FRIEND = "friends.csv"
-FILENAME_FRIEND = "requests.csv"
+FILENAME_REQUEST = "requests.csv"
 
 class Manage:
     def __init__(self):
@@ -413,3 +413,44 @@ def return_names_major(self, major):
                     names.append(row)
 
         return names
+
+
+def send_requests(self, sign_name, unames):
+    blank = []
+    try:
+        unames.remove(sign_name)
+    except ValueError:
+        gar = 0
+    if len(unames) == 0:
+        print("No students found")
+        print()
+    else:
+        duplicates = 0
+        print("Enter '1' for yes and '0' for no.")
+        print("Do you wish to send a request to connect to:")
+        for uname in unames:
+            choice = input(uname + "?: ")
+            choice = utility.check_option(choice, 0, 1)
+            if choice == "1":
+                with open(FILENAME_REQUEST, 'r') as readFile:
+                    reader = csv.reader(readFile)
+                    for row in reader:
+                        if row != blank:
+                            if row[0] == sign_name and row[1] == uname:
+                                duplicates = duplicates + 1
+
+                with open(FILENAME_FRIEND, 'r') as readFile2:
+                    reader2 = csv.reader(readFile2)
+                    for row in reader2:
+                        if row != blank:
+                            if row[0] == sign_name and row[1] == uname:
+                                duplicates = duplicates + 1
+
+                if duplicates == 0:
+                    with open(FILENAME_REQUEST, "a") as file:
+                        writer_csv = csv.writer(file)
+                        writer_csv.writerow((sign_name, uname))
+                    print("Request to connect sent")
+                else:
+                    print("Friend request has already been sent or accepted")
+
