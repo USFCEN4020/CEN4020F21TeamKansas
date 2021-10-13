@@ -11,7 +11,7 @@ import student as s
 import profiles as p
 
 # To test password verfication. In Terminal run: pytest test_main.py
-
+#Deric's git test
 
 class TestClass:
     '''----------------------------------EPIC #1 TESTS-----------------------------------------------------'''
