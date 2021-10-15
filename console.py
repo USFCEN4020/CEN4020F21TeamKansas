@@ -2,6 +2,7 @@ import time
 import manage as m
 import utility
 import csv
+import friend
 
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_SETTINGS = "settings.csv"
@@ -9,6 +10,7 @@ FILENAME_PROFILE = "profiles.csv"
 FILENAME_FRIEND = "friends.csv"
 FILENAME_REQUEST = "requests.csv"
 blank_string = " "
+
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
 def Welcome_Page():
@@ -48,6 +50,7 @@ def Welcome_Page():
 
 
 def Login_Page(name):
+    friend.check_requests(name)
     print()
     print("\nSelect one of the below options:")
     print("1. Create Profile")
@@ -58,44 +61,51 @@ def Login_Page(name):
     print("6. Useful Links")
     print("7. inCollege Important Links")
     print("8. Connect with Friends")
-    print("9. Log Out")
+    print("9. My Connections")
+    print("10. Log Out")
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-8
     decision = utility.checkUserInput(decision, 1, 8)
 
-    if (decision == "1"):
+    if decision == "1":
         manage = m.Manage()
         manage.create_profile(name)
         decision = input("\n1. Return to previous screen. ")
         decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
-    elif (decision == "2"):
+    elif decision == "2":
         manage = m.Manage()
         manage.view_profile(name)
         decision = input("\n1. Return to previous screen. ")
         decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
-    elif (decision == "3"):
+    elif decision == "3":
         print("\nUnder construction for now")
         Login_Page(name)
-    elif (decision == "4"):
+    elif decision == "4":
         manage = m.Manage()
         manage.new_job(name)
         Login_Page(name)
-    elif (decision == "5"):
+    elif decision == "5":
         LearnSkill_Page(name)
-    elif (decision == "6"):
+    elif decision == "6":
         UsefulLinks_Page(1, name)
-    elif (decision == "7"):
+    elif decision == "7":
         ImportantLinks_Page(1, name)
-    elif(decision == "8"):
-        search_friend(name)
-    elif (decision == "9"):
+    elif decision == "8":
+        friend.search_friend(name)
+    elif decision == "9":
+        friend.show_connection(name)
+    elif decision == "10":
         Welcome_Page()
 
 
-# Displays 5 skills that the user can learn (all of which return "under construction"). The user is also allowed to not choose a skill, which will bring the user back to the welcome screen by calling welcomeScreen.
+# Displays 5 skills that the user can learn
+# (all of which return "under construction").
+# The user is also allowed to not choose a skill,
+# which will bring the user back to the welcome screen
+# by calling welcomeScreen.
 def LearnSkill_Page(name):
     print()
     print("\nSelect one of the below options:")
@@ -469,153 +479,3 @@ def GeneralLinks_Page(value, name):
         GeneralLinks_Page(value, name)
     elif (decision == "8"):
         UsefulLinks_Page(value, name)
-
-
-def search_friend(sname):
-    manage = m.Manage()
-    sent = 0
-    choice = 0
-
-    while sent == 0:
-        results = list()
-        entry = [" ", " ", " ", " ", " "]
-        print("Select one of the options to search for friend")
-        print("1. Search by last name")
-        print("2. Search by University")
-        print("3. Search by Major")
-        print("4. Return to previous page")
-        choice = input("Your selection: ")
-
-        # check user input
-        choice = utility.checkUserInput(choice, 1, 4)
-
-        if choice == "1":
-            last = input("Enter last name: ")
-            names = list()
-            names = manage.return_names(last)
-            for uname in names:
-                partial_results = list()
-                partial_results = manage.return_students(uname)
-                for entry in partial_results:
-                    results.append(entry)
-            for row in results:
-                print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(sname, names)
-        elif choice == "2":
-            univ = input("Enter University: ")
-            print()
-            names = manage.return_names_uni(univ)
-            for uname in names:
-                partial_results = list()
-                partial_results = manage.return_students(uname)
-                for entry in partial_results:
-                    results.append(entry)
-            for row in results:
-                print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(sname, names)
-        elif choice == "3":
-            major = input("Enter Major: ")
-            print()
-            names = manage.return_names_major(major)
-            for uname in names:
-                partial_results = list()
-                partial_results = manage.return_students(uname)
-                for entry in partial_results:
-                    results.append(entry)
-            for row in results:
-                print(row[0] + ": " + row[2] + " " + row[3])
-            manage.send_requests(sname, names)
-        elif choice == "4":
-            sent = 1
-
-
-def check_requests(sname):
-    manage = m.Manage()
-    blank = []
-    count1 = 0
-    count2 = 0
-    req = 0
-    add1 = list()
-    add2 = list()
-    super_lines = list()
-    lines1 = list()
-    lines2 = list()
-
-    with open(FILENAME_REQUEST, 'r') as readFile:
-        reader2 = csv.reader(readFile)
-        for row2 in reader2:
-            if row2 != blank:
-                lines2.append(row2)
-                count2 += 1
-                if lines2[count2 - 1][1] == sname:
-                    req += 1
-
-    if req > 0:
-        print("You have one or more pending friend requests. Review them?")
-        print("0. No")
-        print("1. Yes")
-        choice = input("Your selection: ")
-        # check that user provided acceptable input
-        choice = utility.checkUserInput(choice, 0, 1)
-        if choice == "1":
-            with open(FILENAME_REQUEST, 'r') as readFile:
-                reader = csv.reader(readFile)
-                for row in reader:
-                    if row != blank:
-                        if row[1] != sname:
-                            super_lines.append(row)
-
-            with open(FILENAME_REQUEST, 'r') as readFile:
-                reader = csv.reader(readFile)
-                for row in reader:
-                    if row != blank:
-                        lines1.append(row)
-                        count1 += 1
-                        if lines1[count1 - 1][1] == sname:
-                            print()
-                            print("You have a pending friend request from " + lines1[count1 - 1][0])
-                            print("Do you accept it? Enter '1' for yes and '0' for no")
-                            accept = input("Your selection: ")
-                            accept = utility.checkUserInput(accept, 0, 1)
-                            if accept == "1":
-                                add1.append(sname)
-                                add2.append(lines1[count1 - 1][0])
-
-            i = 0
-            while i < len(add1):
-                manage.add_friend(add1[i], add2[i])
-                i = i + 1
-
-            with open(FILENAME_REQUEST, "w") as writeFile:
-                writer = csv.writer(writeFile)
-                for line in super_lines:
-                    writer.writerow(line)
-
-
-def F_list(name):
-    with open(FILENAME_FRIEND, 'r') as f:
-        checker = len(f.read().strip())
-    if(checker == 0):
-        print("Friends list empty. Returning to main menu")
-        #go to log in screen
-    else:
-        with open(FILENAME_STUDENT, 'r') as f2:
-            UserR = csv.reader(f2)
-            UserN = list(UserR)
-        print("Current Friends: ")
-        with open(FILENAME_FRIEND, 'r') as f3:
-            FriendR = csv.reader(f3)
-            FriendD = list(FriendR)
-        for user in FriendD:
-            if name in user:
-                ind = user.index(name)
-                if ind == 0:
-                    friend = 1
-                    un = user[friend]
-                    number = -1
-                    for i in UserN:
-                        number = number + 1
-                        if(number%2==0):
-                            if i[0]==UserN:
-                                print(i[2]+' '+i[3])
-                                break
