@@ -57,7 +57,8 @@ def Login_Page(name):
     print("5. Learn a New Skill")
     print("6. Useful Links")
     print("7. inCollege Important Links")
-    print("8. Log Out")
+    print("8. Connect with Friends")
+    print("9. Log Out")
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-8
@@ -88,7 +89,9 @@ def Login_Page(name):
         UsefulLinks_Page(1, name)
     elif (decision == "7"):
         ImportantLinks_Page(1, name)
-    elif (decision == "8"):
+    elif(decision == "8"):
+        search_friend(name)
+    elif (decision == "9"):
         Welcome_Page()
 
 
@@ -570,13 +573,13 @@ def check_requests(sname):
                         count1 += 1
                         if lines1[count1 - 1][1] == sname:
                             print()
-                            print("You have a pending friend request from " + lines[count - 1][0])
+                            print("You have a pending friend request from " + lines1[count1 - 1][0])
                             print("Do you accept it? Enter '1' for yes and '0' for no")
                             accept = input("Your selection: ")
                             accept = utility.checkUserInput(accept, 0, 1)
                             if accept == "1":
                                 add1.append(sname)
-                                add2.append(lines1[count - 1][0])
+                                add2.append(lines1[count1 - 1][0])
 
             i = 0
             while i < len(add1):
@@ -587,3 +590,32 @@ def check_requests(sname):
                 writer = csv.writer(writeFile)
                 for line in super_lines:
                     writer.writerow(line)
+
+
+def F_list(name):
+    with open(FILENAME_FRIEND, 'r') as f:
+        checker = len(f.read().strip())
+    if(checker == 0):
+        print("Friends list empty. Returning to main menu")
+        #go to log in screen
+    else:
+        with open(FILENAME_STUDENT, 'r') as f2:
+            UserR = csv.reader(f2)
+            UserN = list(UserR)
+        print("Current Friends: ")
+        with open(FILENAME_FRIEND, 'r') as f3:
+            FriendR = csv.reader(f3)
+            FriendD = list(FriendR)
+        for user in FriendD:
+            if name in user:
+                ind = user.index(name)
+                if ind == 0:
+                    friend = 1
+                    un = user[friend]
+                    number = -1
+                    for i in UserN:
+                        number = number + 1
+                        if(number%2==0):
+                            if i[0]==UserN:
+                                print(i[2]+' '+i[3])
+                                break
