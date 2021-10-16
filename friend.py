@@ -191,17 +191,17 @@ def show_requests(name):
 
 
 def fri_list(name):
-    with open(console.FILENAME_FRIEND, 'r') as f:
+    with open("friends.csv", 'r') as f:
         checker = len(f.read().strip())
-    if(checker == 0):
+    if (checker == 0):
         print("Friends list empty. Returning to main menu")
-        #go to log in screen
+        # go to log in screen
     else:
-        with open(console.FILENAME_STUDENT, 'r') as f2:
+        with open('student_data.csv', newline=' ') as f2:
             UserR = csv.reader(f2)
             UserN = list(UserR)
         print("Current Friends: ")
-        with open(console.FILENAME_FRIEND, 'r') as f3:
+        with open("friends.csv", newline=' ') as f3:
             FriendR = csv.reader(f3)
             FriendD = list(FriendR)
         for user in FriendD:
@@ -209,25 +209,103 @@ def fri_list(name):
                 ind = user.index(name)
                 if ind == 0:
                     friend = 1
-                    un = user[friend]
+                    UserN = user[friend]
                     number = -1
                     for i in UserN:
                         number = number + 1
-                        if(number%2==0):
-                            if i[0]==UserN:
-                                print(i[2]+' '+i[3])
+                        if (number % 2 == 0):
+                            if i[0] == UserN:
+                                print(i[2] + ' ' + i[3])
                                 break
+    show_connection(name)
 
 
 def remo_fri(name):
-   with open(console.FILENAME_FRIEND, 'r') as file:
-       blank = len(file.read().strip())
-   if blank == 0:
-       print("")
+    with open("friends.csv", 'r') as f:
+        checker = len(f.read().strip())
+    if (checker == 0):
+        print("Friends list empty. Returning to main menu")
+        # go to log in screen
+    else:
+        UserN = ''
+        with open('student_data.csv', newline='') as f2:
+            UserR = csv.reader(f2)
+            UserD = list(UserR)
+        RF = input("What is the first name of the person you would like to remove? ")
+        RL = input("What is the last name? ")
+        num = -1
+        for User in UserD:
+            num = num + 1
+            if (num % 2 == 0):
+                if (User[2] == RF and User[3] == RL):
+                    UserN = User[0]  # username of the student
+        if (UserN == ''):
+            print("User not found. Try again. ")
+            remo_fri(name)
+        with open("friends.csv", newline='') as f3:
+            FriendR = csv.reader(f3)
+            FriendD = list(FriendR)
+
+        with open("friends.csv", "w", newline="") as f4:
+            write = csv.writer(f4)
+            num = -1
+            for pair in FriendD:
+                num = num + 1
+                if (num % 2 == 0):
+                    if (pair[0] == name and pair[1] == UserN) or (pair[0] == UserN and pair[1] == name):
+                        continue
+                    else:
+                        write.writerow((pair[0], pair[1]))
+                        write.writerow("")
+        print("Friendship eliminated, congratulations!")
+    show_connection(name)
 
 
 def fri_pro(name):
-    uname = ''
+    UserN = ''
+    with open("friends.csv", 'r') as f:
+        checker = len(f.read().strip())
+    if (checker == 0):
+        print("Friends list empty. Returning to main menu")
+        # go to log in screen
+    else:
+        with open('student_data.csv', newline=' ') as f2:
+            UserR = csv.reader(f2)
+            UserNS = list(UserR)
+        print("Current Friends: ")
+        with open("friends.csv", newline='') as f3:
+            FriendR = csv.reader(f3)
+            FriendD = list(FriendR)
+        for User in FriendD:  # checks all friends
+            if name in User:  # if user is found in a friend pairing
+                index = User.index(name)
+                if index == 0:
+                    fri = 1
+                    UN = User[fri]
+                    num = -1
+                    for i in UserNS:  # searches through student data for first and last name
+                        num = num + 1
+                        if (num % 2 == 0):
+                            if i[0] == UN:
+                                print(i[2] + ' ' + i[3])
+    print("Type in the first and last name of your friend to view their profile:")
+    FirstN = input('Please input first name: ')
+    LastN = input('Please input last name: ')
 
-    with open(console.FILENAME_FRIEND, 'r') as file:
-        blank = len(file.read().strip())
+    with open("student_data.csv", newline='') as f4:       #finds the username of the friend
+        UserR = csv.reader(f4)
+        UserD = list(UserR)
+    num = -1
+    for User in UserD:
+        num = num + 1
+        if(num%2==0):
+            if(User[2]==FirstN and User[3]==LastN):
+                username = User[0]
+    if(UserN==''):
+        print("User not found. Try again. ")
+        fri_pro(name)
+
+    man = m.Manage()
+    man.view_profile(UserN)
+    f4.close()
+    show_connection(name)

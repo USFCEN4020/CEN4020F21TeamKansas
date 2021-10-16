@@ -66,13 +66,13 @@ def Login_Page(name):
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-8
-    decision = utility.checkUserInput(decision, 1, 8)
+    decision = utility.checkUserInput(decision, 1, 11)
 
     if decision == "1":
         manage = m.Manage()
         manage.create_profile(name)
         decision = input("\n1. Return to previous screen. ")
-        decision = utility.checkUserInput(decision, 1, 1)
+        decision = utility.checkUserInput(decision, 1, 10)
         Login_Page(name)
     elif decision == "2":
         manage = m.Manage()

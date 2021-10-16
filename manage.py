@@ -142,7 +142,7 @@ class Manage:
         return None
 
     def add_job(self, job, n):
-        if len(self.job_list) >= 5:
+        if len(self.job_list) >= 10:
             print("\nYou cannot post anymore jobs. Limited to 5.")
             return None
 
@@ -182,7 +182,7 @@ class Manage:
                 print("Try again!")
                 return None
 
-        if len(self.student_list) < 5:
+        if len(self.student_list) < 11:
             self.student_list.append(student)
             user_name = student.get_user_name()
             print("Account successfully created.")
