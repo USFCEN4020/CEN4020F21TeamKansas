@@ -11,7 +11,7 @@ def main():  # controller of program
     print()
     time.sleep(2)
     
-    console.Welcome_Page()
+    console.welcome()
 
 if __name__ == "__main__":
     # execute only if run as a script
