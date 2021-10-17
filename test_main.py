@@ -295,7 +295,7 @@ class TestClass:
         teststud10 = s.Student("test10", "Password123!", "Test", "Ten")
         assert manage.add_student(teststud10) == teststud10.get_user_name()
 
-
+    #test case to return last name 
     def test_return_friend_lastname(self):
         manage = ma.Manage()
         blank = []
@@ -317,7 +317,7 @@ class TestClass:
         assert len(actual_result) == len(expected)
         assert all([a == b for a, b in zip(actual_result, expected_result)])
 
-
+    #test case to return a friend in university
     def test_return_friend_university(self):
         manage = ma.Manage()
         expected_result = list()
@@ -338,7 +338,7 @@ class TestClass:
         assert len(actual_result) == len(expected_result)
         assert all([a == b for a, b in zip(actual_result, expected_result)])
 
-
+    #test case to return a friend major
     def test_return_friend_major(self):
         manage = ma.Manage()
         blank = []
@@ -355,7 +355,6 @@ class TestClass:
                     if lines[count - 1][2] == major:
                         expected_result.append(lines[count - 1][0])
             return expected_result
-
         actual_result = manage.return_friend_major(major)
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual_result, expected_result)])
