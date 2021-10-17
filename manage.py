@@ -142,8 +142,8 @@ class Manage:
         return None
 
     def add_job(self, job, n):
-        if len(self.job_list) >= 5:
-            print("\nYou cannot post anymore jobs. Limited to 5.")
+        if len(self.job_list) >= 10:
+            print("\nYou cannot post anymore jobs. Limited to 10.")
             return None
 
         else:
@@ -182,7 +182,7 @@ class Manage:
                 print("Try again!")
                 return None
 
-        if len(self.student_list) < 5:
+        if len(self.student_list) < 11:
             self.student_list.append(student)
             user_name = student.get_user_name()
             print("Account successfully created.")
@@ -322,47 +322,45 @@ class Manage:
             writer_csv.writerow((student1, student2))
             writer_csv.writerow((student2, student1))
 
-    def return_students(self, uname):
-        blank = []
+    def return_students(self, username):
+        newList = []
         count = 0
         lines = list()
         results = list()
         with open(FILENAME_STUDENT, 'r') as readFile:
             reader = csv.reader(readFile)
             for row in reader:
-                if row != blank:
+                if row != newList:
                     lines.append(row)
                     count = count + 1
-                    if lines[count - 1][0] == uname:
+                    if lines[count - 1][0] == username:
                         results.append(row)
             return results
 
-    def return_friend_lastname(self, lname):
-        blank = []
+    def return_friend_lastname(self, lastname):
+        newList = []
         count = 0
         lines = list()
         names = list()
-        # read current students and fill 'lines' with relevant students
         with open(FILENAME_STUDENT, 'r') as readFile:
             reader = csv.reader(readFile)
             for row in reader:
-                if row != blank:  # or else there will be too much empty space
+                if row != newList:
                     lines.append(row)
                     count = count + 1
-                    if lines[count - 1][3] == lname:
+                    if lines[count - 1][3] == lastname:
                         names.append(lines[count - 1][0])
             return names
 
     def return_friend_university(self, univ):
-        blank = []
+        newList = []
         count = 0
         lines = list()
         names = list()
-        # read current students and fill 'lines' with relevant students
         with open(FILENAME_PROFILE, 'r') as readFile:
             reader = csv.reader(readFile)
             for row in reader:
-                if row != blank:  # or else there will be too much empty space
+                if row != newList:
                     lines.append(row)
                     count = count + 1
                     if lines[count - 1][3] == univ:
@@ -370,57 +368,56 @@ class Manage:
             return names
 
     def return_friend_major(self, major):
-        blank = []
+        newList = []
         count = 0
         lines = list()
         names = list()
-        # read current students and fill 'lines' with relevant students
         with open(FILENAME_PROFILE, 'r') as readFile:
             reader = csv.reader(readFile)
             for row in reader:
-                if row != blank:  # or else there will be too much empty space
+                if row != newList:
                     lines.append(row)
                     count = count + 1
                     if lines[count - 1][2] == major:
                         names.append(lines[count - 1][0])
             return names
 
-    def send_friend_requests(self, sign_name, unames):
-        blank = []
+    def send_friend_requests(self, SignName, usernames):
+        newList = []
         try:
-            unames.remove(sign_name)
+            usernames.remove(SignName)
         except ValueError:
             gar = 0
-        if (len(unames) == 0):
+        if (len(usernames) == 0):
             print("No students found")
             print()
         else:
-            duplicates = 0
-            print("Enter 1 for yes or 0 for no:")
-            print("Do you wish to send a request to connect to:")
-            for uname in unames:
-                decision = input(uname + "?: ")
+            replicated = 0
+            print("0: No\n1: Yes")
+            print("Send a request to connect to:")
+            for username in usernames:
+                decision = input(username + "?: ")
                 decision = utility.checkUserInput(decision, 0, 1)
                 if (decision == "1"):
                     with open(FILENAME_REQUEST, 'r') as readFile:
                         reader = csv.reader(readFile)
                         for row in reader:
-                            if row != blank:
-                                if row[0] == sign_name and row[1] == uname:
-                                    duplicates = duplicates + 1
+                            if row != newList:
+                                if row[0] == SignName and row[1] == username:
+                                    replicated = replicated + 1
 
                     with open(FILENAME_FRIEND, 'r') as readFile2:
                         reader2 = csv.reader(readFile2)
                         for row in reader2:
-                            if row != blank:
-                                if row[0] == sign_name and row[1] == uname:
-                                    duplicates = duplicates + 1
+                            if row != newList:
+                                if row[0] == SignName and row[1] == username:
+                                    replicated = replicated + 1
 
-                    if duplicates == 0:
+                    if replicated == 0:
                         with open(FILENAME_REQUEST, "a") as file:
                             writer_csv = csv.writer(file)
-                            writer_csv.writerow((sign_name, uname))
-                        print("Request to connect sent")
+                            writer_csv.writerow((SignName, username))
+                        print("Request to connect sent!")
                     else:
                         print("Request has been sent or already accepted.")
 

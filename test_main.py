@@ -11,7 +11,9 @@ import student as s
 import profiles as p
 
 # To test password verfication. In Terminal run: pytest test_main.py
-#Deric's git test
+
+FILENAME_PROFILE = "profiles.csv"
+FILENAME_STUDENT = "student_data.csv"
 
 class TestClass:
     '''----------------------------------EPIC #1 TESTS-----------------------------------------------------'''
@@ -255,4 +257,105 @@ class TestClass:
 
 
     '''-------------------------------------EPIC #5 TESTS---------------------------------------------------'''
-#test 10 account maximum
+
+    # Test 10 Max accounts
+    def test_10maximimAccounts(self):
+        filename = "student_data.csv"
+        f = open(filename, "w+")
+        f.close()
+        manage = ma.Manage()
+
+        teststud1 = s.Student("dericwright", "Password123!", "Deric", "Wright")
+        assert manage.add_student(teststud1) == teststud1.get_user_name()
+
+        teststud2 = s.Student("matteovescera", "Password123!", "Matteo", "Vescera")
+        assert manage.add_student(teststud2) == teststud2.get_user_name()
+
+        teststud3 = s.Student("stefanovisentin", "Password123!", "Stefano", "Visentin")
+        assert manage.add_student(teststud3) == teststud3.get_user_name()
+
+        teststud4 = s.Student("darshavala", "Password123!", "Darshan", "Vala")
+        assert manage.add_student(teststud4) == teststud4.get_user_name()
+
+        teststud5 = s.Student("panatdawiangngoen", "Password123!", "Panatda", "Wiangngoen")
+        assert manage.add_student(teststud5) == teststud5.get_user_name()
+
+        teststud6 = s.Student("nghiatroung", "Password123!", "Nghia", "Troung")
+        assert manage.add_student(teststud6) == teststud6.get_user_name()
+
+        teststud7 = s.Student("test7", "Password123!", "Test", "Seven")
+        assert manage.add_student(teststud7) == teststud7.get_user_name()
+
+        teststud8 = s.Student("test8", "Password123!", "Test", "Eight")
+        assert manage.add_student(teststud8) == teststud8.get_user_name()
+
+        teststud9 = s.Student("test9", "Password123!", "Test", "Nine")
+        assert manage.add_student(teststud9) == teststud9.get_user_name()
+
+        teststud10 = s.Student("test10", "Password123!", "Test", "Ten")
+        assert manage.add_student(teststud10) == teststud10.get_user_name()
+
+
+    def test_return_friend_lastname(self):
+        manage = ma.Manage()
+        blank = []
+        count = 0
+        lastname = "Wright"
+        lines = list()
+        expected_result = list()
+        with open(FILENAME_STUDENT, 'r') as rFile:
+            reader = csv.reader(rFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count = count + 1
+                    if lines[count - 1][3] == lastname:
+                        expected_result.append(lines[count - 1][0])
+            return expected_result
+
+        actual_result = manage.return_friend_lastname(lastname)
+        assert len(actual_result) == len(expected)
+        assert all([a == b for a, b in zip(actual_result, expected_result)])
+
+
+    def test_return_friend_university(self):
+        manage = ma.Manage()
+        expected_result = list()
+        blank = []
+        university = "Usf"
+        count = 0
+        lines = list()
+        with open(FILENAME_PROFILE, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count = count + 1
+                    if lines[count - 1][3] == university:
+                        expected_result.append(lines[count - 1][0])
+
+        actual_result = manage.return_friend_university(university)
+        assert len(actual_result) == len(expected_result)
+        assert all([a == b for a, b in zip(actual_result, expected_result)])
+
+
+    def test_return_friend_major(self):
+        manage = ma.Manage()
+        blank = []
+        count = 0
+        lines = list()
+        major = "Computer Science"
+        expected_result = list()
+        with open(FILENAME_PROFILE, 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    lines.append(row)
+                    count = count + 1
+                    if lines[count - 1][2] == major:
+                        expected_result.append(lines[count - 1][0])
+            return expected_result
+
+        actual_result = manage.return_friend_major(major)
+        assert len(actual) == len(expected)
+        assert all([a == b for a, b in zip(actual_result, expected_result)])

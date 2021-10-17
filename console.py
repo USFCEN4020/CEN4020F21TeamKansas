@@ -46,7 +46,7 @@ def Welcome_Page():
     elif (decision == "6"):
         ImportantLinks_Page(0, blank_string)
     elif (decision == "7"):
-        return
+        exit()
 
 
 def Login_Page(name):
@@ -65,14 +65,14 @@ def Login_Page(name):
     print("10. Log Out")
     decision = input("\nYour selection: ")
 
-    # Used for input validation. User should only choose a value 1-8
+    # Used for input validation. User should only choose a value 1-11
     decision = utility.checkUserInput(decision, 1, 11)
 
     if decision == "1":
         manage = m.Manage()
         manage.create_profile(name)
         decision = input("\n1. Return to previous screen. ")
-        decision = utility.checkUserInput(decision, 1, 10)
+        decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
     elif decision == "2":
         manage = m.Manage()
@@ -152,7 +152,7 @@ def Register_Page():
         decision = input("\nYour selection: ")
 
         # Used for input validation. User should only choose a value 1-2
-        choice = utility.checkUserInput(decision, 1, 2)
+        decision = utility.checkUserInput(decision, 1, 2)
         if (decision == "1"):
             Register_Page()
         elif (decision == "2"):
@@ -186,6 +186,9 @@ def ConnectWithPeople_Page():
         Register_Page()
     elif (decision == "3"):
         Welcome_Page()
+
+
+
 
 def ImportantLinks_Page(value, name):
     print("\nInCollege Important Links. Select one of the below options:")
