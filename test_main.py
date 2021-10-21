@@ -358,3 +358,8 @@ class TestClass:
         actual_result = manage.return_friend_major(major)
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual_result, expected_result)])
+
+    '''-------------------------------------EPIC #6 TESTS---------------------------------------------------'''
+    #test 10 job list
+    #test apply job search/ intern
+    
