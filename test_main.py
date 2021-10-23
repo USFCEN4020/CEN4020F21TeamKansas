@@ -361,5 +361,80 @@ class TestClass:
 
     '''-------------------------------------EPIC #6 TESTS---------------------------------------------------'''
     #test 10 job list
-    #test apply job search/ intern
-    
+    def test_JobsMax(self):
+        filename = "job_data.csv"
+        f = open(filename, "w+")
+        f.close()
+        manage = ma.Manage()
+
+        testjob1 = j.Job("Developer", "Devs some stuff", "USF", "Tampa", "100000", "Deric")
+        assert manage.add_job(testjob1, "Deric") == testjob1.get_poster_name()
+
+        testjob2 = j.Job("Developer2", "Devs some stuff", "USF", "Tampa", "200000", "Nghia")
+        assert manage.add_job(testjob2, "Nghia") == testjob2.get_poster_name()
+
+        testjob3 = j.Job("Chef", "cooks stuff", "Hell's Kitchen", "Tampa", "20000", "Matteo")
+        assert manage.add_job(testjob3, "Matteo") == testjob3.get_poster_name()
+
+        testjob4 = j.Job("Gamer", "Rules the World", "FaZe Clan", "Tampa", "2000", "Darshan")
+        assert manage.add_job(testjob4, "Darshan") == testjob4.get_poster_name()
+
+        testjob5 = j.Job("Tester", "Tests stuff", "Microsoft", "Tampa", "5000", "Panatda")
+        assert manage.add_job(testjob5, "Panatda") == testjob5.get_poster_name()
+
+        testjob6 = j.Job("World Dominator", "Rules the World", "The World", "Tampa", "10000", "Stefano")
+        assert manage.add_job(testjob6, "Stefano") == testjob6.get_poster_name()
+
+        testjob7 = j.Job("Builder", "Builds stuff", "BobTheBuilder", "Tampa", "1000", "Bob")
+        assert manage.add_job(testjob7, "Builder") == testjob7.get_poster_name()
+
+        testjob8 = j.Job("Builder", "Survives", "Mojang", "Minecraft", "3000", "Steve")
+        assert manage.add_job(testjob8, "Steve") == testjob8.get_poster_name()
+
+        testjob9 = j.Job("Master Chief", "Defeats the Covenant", "UNSC", "Halo", "117", "John")
+        assert manage.add_job(testjob9, "Steve") == testjob9.get_poster_name()
+
+        testjob10 = j.Job("Spiderman", "Saves stuff", "New York", "Marvel", "2000", "Peter")
+        assert manage.add_job(testjob10, "Steve") == testjob10.get_poster_name()
+
+
+    def test_list_save_job(self):
+        name = "Developer1"
+        assert name
+        list_save_job = []
+        with open("save_job.csv", "r") as file:
+            reader_csv = csv.reader(file)
+            for row in reader_csv:
+                if row != [] and row[0] == name:
+                    list_save_job.append(row[1])
+        assert name == "Developer1"
+
+    def test_add_save_job(self):
+        username = "dericwright"
+        title = "Job1"
+        list_application = []  # keep title of applications of the user
+        with open("applications.csv", "r") as file:
+            reader_csv = csv.reader(file)
+            for row in reader_csv:
+                if row != [] and row[0] == username:
+                    list_application.append(row[1])
+        assert title != False
+
+    def test_add_pending_message(self):
+        user1 = "Nghia"
+        user2 = "Deric"
+        message = "Pending Message Test"
+        check = 0
+        blank = []
+        manage = ma.Manage()
+        manage.add_pending_message(user1, user2, message)
+        with open("pending_messages.csv", 'r') as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if row != blank:
+                    print(row[0])
+                    print(row[1])
+                    print(row[2])
+                    if (row[0] == user1) and (row[1] == user2) and (row[2] == message):
+                        check = 1
+        assert check == 1;
