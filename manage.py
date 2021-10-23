@@ -158,7 +158,7 @@ class Manage:
             writer_csv = csv.writer(file)
             for element in self.job_list:
                 writer_csv.writerow((element.get_title(), element.get_description(), element.get_employer(),
-                                     element.get_location(), element.get_salary(), element.get_post_name()))
+                                     element.get_location(), element.get_salary(), element.get_poster_name()))
 
         # should delete the rows in save_job.csv that relative to the job deleted
         print(title)

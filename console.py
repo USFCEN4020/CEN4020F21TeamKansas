@@ -5,8 +5,10 @@ import csv
 import friend
 
 FILENAME_STUDENT = "student_data.csv"
+FILENAME_APP = "applications.csv"
 FILENAME_SETTINGS = "settings.csv"
 FILENAME_PROFILE = "profiles.csv"
+FILENAME_JOB = "job_data.csv"
 FILENAME_FRIEND = "friends.csv"
 FILENAME_REQUEST = "requests.csv"
 blank_string = " "
@@ -57,12 +59,14 @@ def Login_Page(name):
     print("2. View Profile")
     print("3. Search for job/internship")
     print("4. Post a Job")
-    print("5. Learn a New Skill")
-    print("6. Useful Links")
-    print("7. inCollege Important Links")
-    print("8. Connect with Friends")
-    print("9. My Connections")
-    print("10. Log Out")
+    print("5. Delete a Job")
+    print("6. Search a Job")
+    print("7. Learn a New Skill")
+    print("8. Useful Links")
+    print("9. inCollege Important Links")
+    print("10. Connect with Friends")
+    print("11. My Connections")
+    print("12. Log Out")
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-11
@@ -81,23 +85,53 @@ def Login_Page(name):
         decision = utility.checkUserInput(decision, 1, 1)
         Login_Page(name)
     elif decision == "3":
-        print("\nUnder construction for now")
-        Login_Page(name)
+        job_Screen(name)
     elif decision == "4":
         manage = m.Manage()
         manage.new_job(name)
         Login_Page(name)
     elif decision == "5":
-        LearnSkill_Page(name)
+        manage = m.Manage()
+        JobTL = []  # keep the titles of jobs that the user posted
+        for ele in manage.get_list_job():
+            if ele.get_poster_name() == name:
+                JobTL.append(ele.get_title())
+
+        if len(JobTL) != 0:
+            print("\nHere is all the Jobs that have been posted by you: ")
+            count = 0
+            for ele in JobTL:
+                count += 1
+                print(str(count) + ": " + ele)
+
+            for ele in JobTL:
+                print()
+                print("Would you like to eliminate job with title: " + "\"" + ele + "\"")
+                print("1. Yes, 2 No")
+                secDecision = input("Input: ")
+                # check the right value of input from user
+                secDecision = utility.checkUserInput(secDecision, 1, 2)
+                if secDecision == "1":
+                    manage.delete_job(name, ele)
+                    Login_Page(name)
+                else:
+                    pass
+        else:
+            print("\nYou have not posted any jobs so far")
+            Login_Page(name)
     elif decision == "6":
-        UsefulLinks_Page(1, name)
+        job_Screen(name)
     elif decision == "7":
-        ImportantLinks_Page(1, name)
+        LearnSkill_Page(name)
     elif decision == "8":
-        friend.search_friend(name)
+        UsefulLinks_Page(1, name)
     elif decision == "9":
-        friend.show_connection(name)
+        ImportantLinks_Page(1, name)
     elif decision == "10":
+        friend.search_friend(name)
+    elif decision == "11":
+        friend.show_connection(name)
+    elif decision == "12":
         Welcome_Page()
 
 
@@ -482,3 +516,177 @@ def GeneralLinks_Page(value, name):
         GeneralLinks_Page(value, name)
     elif (decision == "8"):
         UsefulLinks_Page(value, name)
+
+def job_Screen(name):
+    decision = 0
+    while(decision != 5):
+        print("Welcome to the Job Screen please enter your selection on the menu below")
+        print("1. View all jobs")
+        print("2. View jobs that you have applied to")
+        print("3. View jobs that you have not applied to")
+        print("4. View your saved jobs")
+        print("5. Return to Log In Screen")
+        decision = input("Input: ")
+        if (decision == "1"):  # search all jobs
+            manage = m.Manage()
+            j = list()
+            print("Here are the current jobs in the system:")
+            with open(FILENAME_JOB, "r") as f:
+                JobR = csv.reader(f)
+                i = 0
+                for row in JobR:
+                    if row != [] and row != ["Title", "Description", "Employer", "Location", "Salary", "Post_Name"]:
+                        i = i + 1
+                        j.append(row)
+                        JobA = 0
+                        with open(FILENAME_APP, "r") as f2:
+                            ApplicR = csv.reader(f2)
+                            for entry in ApplicR:
+                                if entry != []:
+                                    if (entry[0] == name) and (entry[1] == row[0]) and (entry[2] == row[2]):
+                                        JobA = JobA + 1
+                        if JobA > 0:
+                            print(str(i) + ": " + row[0] + " (Applied)")
+                        else:
+                            print(str(i) + ": " + row[0])
+                JobN = len(j)
+            secDecision = JobN + 1
+            thirdDecision = 0
+            while (secDecision != "0"):
+                print("Enter the job number that you wish to view (and if you wish, save or apply to) or press 0 to return")
+                secDecision = input("Input: ")
+                # check that acceptable input was provided by the user
+                secDecision = utility.checkUserInput(secDecision, 0, JobN)
+
+                if (secDecision != "0"):
+                    print(j[int(secDecision) - 1][0])
+                    print("Employer: " + j[int(secDecision) - 1][2])
+                    print("Location: " + j[int(secDecision) - 1][3])
+                    print("Pay: " + j[int(secDecision) - 1][4])
+                    print("About: " + j[int(secDecision) - 1][1])
+                    print()
+                    print("1. Apply, 2. Save 3. Return to menu")
+                    thirdDecision = input("Input: ")
+                    thirdDecision = utility.checkUserInput(thirdDecision, 1, 3)
+                    if (thirdDecision == "1"):  # Application
+                        JobA = 0
+                        with open(FILENAME_APP, "r") as f:
+                            ApplicR = csv.reader(f)
+                            for entry in ApplicR:
+                                if entry != []:
+                                    if (entry[0] == name) and (entry[1] == j[int(secDecision) - 1][0]) and (
+                                        entry[2] == j[int(secDecision) - 1][2]):
+                                        JobA = JobA + 1
+                        if JobA > 0:
+                            print("You have already applications to that job")
+                        else:
+                            manage.add_application(name, j[int(secDecision) - 1][0], j[int(secDecision) - 1][2])
+                    elif (thirdDecision == "2"):  # Save
+                        manage.add_save_job(name, j[int(secDecision) - 1][0])
+
+        # View jobs JobA to
+        elif (decision == "2"):
+            print("Here are the jobs you have applied to:")
+            with open(FILENAME_APP, "r") as f:
+                JobR = csv.reader(f)
+                i = 0
+                for row in JobR:
+                    if row != [] and row[0] == name:
+                        print(row[1] + " at " + row[2])
+
+
+        elif (decision == "3"):
+            ApplicL = []  # keep title of applications of the user
+            with open(FILENAME_APP, "r") as f:
+                JobR = csv.reader(f)
+                for row in JobR:
+                    if row != [] and row[0] == name:
+                        ApplicL.append(row[1])
+
+            JobL = []  # keep title of job in the system.
+            with open(FILENAME_JOB, "r") as f2:
+                JobR = csv.reader(f2)
+                for row in JobR:
+                    if row != [] and row != ["Title", "Description", "Employer", "Location", "Salary", "Post_Name"]:
+                        JobL.append(row[0])
+
+            count = 0
+            for element in JobL:
+                if element not in ApplicL:
+                    count += 1
+                    print(str(count) + ": " + element)
+
+        # View saved jobs
+        elif (decision == "4"):
+            manage = m.Manage()
+            JobSL = manage.list_save_job(name)
+            if len(JobSL) != 0:
+                count = 0
+                for element in JobSL:
+                    count += 1
+                    print(str(count) + ": " + element)
+            else:
+                print("You have no saved jobs!")
+
+            if len(JobSL) != 0:
+
+                print("Would you like to unsave any jobs?")
+                print("1. Unsave, 2.Keep")
+                secDecision = input("Input: ")
+                # check the right value of input from user
+                secDecision = utility.checkUserInput(secDecision, 1, 2)
+
+                if (secDecision == "1"):
+                    for element in JobSL:
+                        print()
+                        print("Do you want to delete job: " + "\"" + element + "\"")
+                        print("1. Yes 2. No")
+                        secDecision = input("Input: ")
+                        # check the right value of input from user
+                        secDecision = utility.checkUserInput(secDecision, 1, 2)
+                        if (secDecision == "1"):
+                            manage.delete_save_job(name, element)
+                        else:
+                            pass
+
+                elif (secDecision == "2"):
+                    pass
+
+        if(decision == "5"):
+            Login_Page(name)
+
+def check_application(name):
+        ApplicL = []  # keep title of applications of the user
+        with open(FILENAME_APP, "r") as f:
+            ApplicR = csv.reader(f)
+            for row in ApplicR:
+                if row != [] and row[0] == name:
+                    ApplicL.append(row[1])
+
+        JobL = []  # keep title of job in the system.
+        with open(FILENAME_JOB, "r") as f2:
+            JobR = csv.reader(f2)
+            for row in JobR:
+                if row != [] and row != ["Title", "Description", "Employer", "Location", "Salary", "Post_Name"]:
+                    JobL.append(row[0])
+
+        for element in ApplicL:
+            if element not in JobL:
+                print()
+                print("The job: " + "\"" + element + "\"" + " has been removed")
+                delete_application(name, element)
+
+
+# delede all applications for the job which is deleted
+def delete_application(name, title):
+    n = []
+    with open(FILENAME_APP, "r") as f:
+        ApplicR = csv.reader(f)
+        for row in ApplicR:
+            if row != [] and (row[0] != name or row[1] != title):
+                n.append(tuple(row))
+
+    with open(FILENAME_APP, "w") as f2:
+        ApplicW = csv.writer(f2)
+        for ele in n:
+            ApplicW.writerow(ele)
