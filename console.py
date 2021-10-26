@@ -70,7 +70,7 @@ def Login_Page(name):
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-11
-    decision = utility.checkUserInput(decision, 1, 11)
+    decision = utility.checkUserInput(decision, 1, 12)
 
     if decision == "1":
         manage = m.Manage()

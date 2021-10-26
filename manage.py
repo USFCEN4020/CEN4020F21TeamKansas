@@ -47,7 +47,7 @@ class Manage:
         if not os.path.isfile(FILENAME_STUDENT):
             with open(FILENAME_STUDENT,'a') as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("User_Name", "Password", "First_Name", "Last_Name"))
+                writer_csv.writerow(("User_Name","Password","First_Name","Last_Name","Tier"))
 
         # Add data from student_data.csv to student_list
         with open(FILENAME_STUDENT,'r') as file:
@@ -239,6 +239,18 @@ class Manage:
         firstname = input("Enter first name: ")
         lastname = input("Enter last name: ")
 
+        #present new user with option to sign up for plus
+        tier = ''
+        while tier == '':
+            isPlus = input("Would you like to sign up for a InCollege plus account? (y/n)")
+            if isPlus == 'y':
+                tier = 'plus'
+                print("Thank you for signing up for Plus! We will start billing you $10/month.")
+            elif isPlus == 'n':
+                tier = 'standard'
+            else:
+                print("invalid response. try again.\n")
+
         # Creates a new object of class AccountPasswordClass
         account = utility.AccountPasswordClass()
 
@@ -247,7 +259,7 @@ class Manage:
             password = input("Enter a password again: ")
 
         # Create a new student object and add it to the student_data.csv file
-        student = s.Student(username, password, firstname, lastname)
+        student = s.Student(username, password, firstname, lastname, tier)
         return manage.add_student(student)
 
 
@@ -311,7 +323,7 @@ class Manage:
 
             with open(FILENAME_STUDENT, "a") as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow((student.get_user_name(), student.get_password(), student.get_first(), student.get_last()))
+                writer_csv.writerow((student.get_user_name(),student.get_password(),student.get_first(),student.get_last(),student.get_tier()))
 
             # Sets the default settings for the user.
             with open(FILENAME_SETTINGS, "a") as file_stg:
