@@ -4,6 +4,12 @@ import utility
 import csv
 import friend
 
+#2 changes here
+#FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+#FILE_SAVE_MES = "messages.csv"
+
+FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+FILE_SAVE_MES = "messages.csv"
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_APP = "applications.csv"
 FILENAME_SETTINGS = "settings.csv"
@@ -53,24 +59,28 @@ def Welcome_Page():
 
 def Login_Page(name):
     friend.check_requests(name)
+    #maybe add check_application(name) here?
+    check_messages(name)
+
     print()
     print("\nSelect one of the below options:")
-    print("1. Create Profile")
-    print("2. View Profile")
+    print("1. Create Profile")#
+    print("2. View Profile")#
     print("3. Search for job/internship")
-    print("4. Post a Job")
-    print("5. Delete a Job")
-    print("6. Search a Job")
-    print("7. Learn a New Skill")
-    print("8. Useful Links")
-    print("9. inCollege Important Links")
-    print("10. Connect with Friends")
-    print("11. My Connections")
-    print("12. Log Out")
+    print("4. Post a Job") #
+    print("5. Delete a Job") #
+    print("6. Search a Job")#
+    print("7. Learn a New Skill")#
+    print("8. Useful Links")#
+    print("9. inCollege Important Links")#
+    print("10. Connect with Friends") #
+    print("11. My Connections")#
+    print("12. Send a Message")
+    print("13. Log Out")
     decision = input("\nYour selection: ")
 
-    # Used for input validation. User should only choose a value 1-11
-    decision = utility.checkUserInput(decision, 1, 12)
+    # Used for input validation. User should only choose a value 1-12
+    decision = utility.checkUserInput(decision, 1, 13)
 
     if decision == "1":
         manage = m.Manage()
@@ -132,6 +142,8 @@ def Login_Page(name):
     elif decision == "11":
         friend.show_connection(name)
     elif decision == "12":
+        send_message(name)
+    elif decision == "13":
         Welcome_Page()
 
 
@@ -690,3 +702,164 @@ def delete_application(name, title):
         ApplicW = csv.writer(f2)
         for ele in n:
             ApplicW.writerow(ele)
+
+
+############################ EPIC 7 MESSAGING ##############################################
+
+def get_friends(name):
+    fri_list = [] #grabbing usernames
+    with open (FILENAME_FRIEND, "r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and row [0] == name and (row[1] not in fri_list):
+                fri_list.append(row[1])
+            elif row != [] and row [1] == name and (row [0] not in fri_list):
+                fri_list.append(row[0])
+
+    return fri_list
+
+
+#PRINTS ALL THE PROFILES IN student.csv
+def all_profiles(name):
+    names_list = list()
+    username_list = list()
+    empty = []
+
+    with open(FILENAME_STUDENT, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if (row != empty) and (row[0] != name) and (row[0] != "User_Name"): #for empty space, which we dont want
+                username_list.append(row[0])
+                names_list.append(row[2]+" "+row[3]) #first and last name
+
+    i = 0
+    print("InCollege Users: ")
+    while i < len(names_list):
+        print(str(i+1)+". "+names_list[i])
+        i += 1
+    return username_list
+
+
+#SENDS MESSAGE TO A FRIEND (OR ANYONE IF PLUS MEMBER)
+def send_message(name):
+    with open(FILENAME_STUDENT, 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row != [] and (row[0] == name):
+                tier = row[4] #find what tier the person is
+
+    #Display all people in student.csv
+    all_users = all_profiles(name)
+    valid_users = get_friends(name)
+
+    #Choose a user to send a message via numbered list
+    choice = input("Enter the corresponding number for which user to message: ")
+    choice = utility.checkUserInput(choice,1,len(all_users)) # fixed its in utility
+    sendMessageTo = all_users[int(choice)-1] 
+    allowToSend = False
+
+    if tier == "standard":
+        for x in valid_users:
+            if x == sendMessageTo:
+                allowToSend = True
+    elif tier == "plus": 
+        allowToSend = True
+
+    #See if we send the message or not (depending on tier level)
+    if allowToSend == True:
+        manage = m.Manage()
+        message = input("Type the message you want to send to "+sendMessageTo+":\n")
+        manage.add_pending_message(name, sendMessageTo, message)
+        print("Message sent!")
+    else: 
+        print("Sorry, you must be friends with that person to send messages")
+
+    #Menu
+    print("Select one of the below options:")
+    print("(1) Send another message")
+    print("(2) Return to Log In Screen")
+    choice = input("Your selection: ")
+    choice = utility.checkUserInput(choice,1,2)
+
+    if (choice == "1"):
+        send_message(name)
+    else:
+        Login_Page(name)
+
+
+#NOTIFIES USER THAT THEY HAVE RECEIVED A MESSAGE AND ALLOWS THEM THE OPTION TO CHECK
+#IF THEY DO NOT WANT TO CHECK, NEXT TIME THEY LOGIN IT WILL PROMPT AGAIN
+def check_messages(name):
+    message_list = [] #(from, message) in this format
+    with open (FILENAME_MES, "r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and row [1] == name:
+                message_list.append((row[0],row[1], row[2]))
+
+    if len(message_list) > 0:
+        print ("You have recieved messages from some people!")
+        for info in message_list:   
+            From, To, Message = info
+            print()
+            print ("Do you want to see the message from: " + "\"" + From + "\"")
+            print("Select one of the below options:")
+            print("(1) Yes")
+            print("(2) No")
+            choice = input("Your selection: ")
+            choice = utility.checkUserInput(choice,1,2)
+
+            if choice == "1":
+                print()
+                print(Message)
+                print ("Do you want to save the message from: " + "\"" + From + "\"")
+                print("Select one of the below options:")
+                print("(1) Yes")
+                print("(2) No")
+                choice = input("Your selection: ")
+                choice = utility.checkUserInput(choice,1,2)
+
+                if (choice == "1"):
+                    add_message(From,To,Message) 
+                    delete_pending_message(From, To, Message) 
+                    print("Do you want to respond the message from " + "\"" + From + "\"")
+                    print("Select one of the below options:")
+                    print("(1) Yes")
+                    print("(2) No")
+                    choice = input("Your selection: ")
+                    choice = utility.checkUserInput(choice,1,2)
+                    if choice == "1":
+                        text = input ("Please type a message: ")
+                        with open(FILENAME_MES,"a") as file:
+                            writer = csv.writer(file)
+                            writer.writerow((To, From, text))
+                        print("The message was sent to " + "\"" + From + "\"")
+                    elif choice == "2":
+                        pass
+
+                elif  choice == "2":
+                    delete_pending_message(From, To, Message)
+            elif choice == "2":
+                pass
+
+
+#NEW MESSAGE FOR message.csv
+def add_message(From, To, Message):
+    with open(FILE_SAVE_MES, "a") as file:
+        writer = csv.writer(file)
+        writer.writerow((From, To, Message))
+
+
+#DELETE ROW FROM pending_message.csv
+def delete_pending_message (From, To, Message):
+    delete_list = []
+    with open(FILENAME_MES,"r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and (row[0] != From or row[1] != To or row[2] != Message):
+                delete_list.append(tuple(row))
+
+    with open(FILENAME_MES,"w") as file:
+        writer_csv = csv.writer(file)
+        for info in delete_list:
+            writer_csv.writerow(info)
