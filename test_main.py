@@ -438,3 +438,6 @@ class TestClass:
                     if (row[0] == user1) and (row[1] == user2) and (row[2] == message):
                         check = 1
         assert check == 1;
+
+    '''-------------------------------------EPIC #7 TESTS---------------------------------------------------'''
+    # test case 
