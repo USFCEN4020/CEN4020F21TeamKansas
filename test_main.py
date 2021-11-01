@@ -420,21 +420,57 @@ class TestClass:
                     list_application.append(row[1])
         assert title != False
 
+    '''-------------------------------------EPIC #7 TESTS---------------------------------------------------'''
+
     def test_add_pending_message(self):
         user1 = "Nghia"
         user2 = "Deric"
         message = "Pending Message Test"
-        check = 0
+        flag = 0
         blank = []
         manage = ma.Manage()
         manage.add_pending_message(user1, user2, message)
-        with open("pending_messages.csv", 'r') as readFile:
-            reader = csv.reader(readFile)
-            for row in reader:
+        with open("pending_messages.csv", 'r') as f:
+            PMReader = csv.reader(f)
+            for row in PMReader:
                 if row != blank:
                     print(row[0])
                     print(row[1])
                     print(row[2])
                     if (row[0] == user1) and (row[1] == user2) and (row[2] == message):
-                        check = 1
-        assert check == 1;
+                        flag = 1
+
+        assert flag == 1
+
+    def test_delete_pending_message(self):
+        user1 = "Nghia"
+        user2 = "Deric"
+        message = "Pending Message Test"
+        flag = 0
+        blank = []
+
+        with open("pending_messages.csv", 'r') as f:
+            PMReader = csv.reader(f)
+            for row in PMReader:
+                if row != blank:
+                    print(row[0])
+                    print(row[1])
+                    print(row[2])
+                    if (row[0] == user1) and (row[1] == user2) and (row[2] == message):
+                        flag = 1
+
+        assert flag == 1
+        flag = 0
+
+        c.delete_pending_message(user1, user2, message)
+        with open("pending_messages.csv", 'r') as f2:
+            PMReader = csv.reader(f2)
+            for row in PMReader:
+                if row != blank:
+                    print(row[0])
+                    print(row[1])
+                    print(row[2])
+                    if (row[0] == user1) and (row[1] == user2) and (row[2] == message):
+                        flag = 1
+
+        assert flag == 0
