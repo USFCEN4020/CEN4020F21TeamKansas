@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 '''
 Helpful function
 '''
@@ -22,7 +21,6 @@ def findPassword(password):
         if password in line:
             return True
     return False
-=======
 import student as s
 import manage as m
 
@@ -113,4 +111,3 @@ def checkUserInput(inputValue, low_val, high_val):
         print("You must type a value between " + str(low_val) + " - " + str(high_val) + ". Please try again.")
         inputValue = input("\nYour selection: ")
     return inputValue
->>>>>>> Epic6

@@ -1,309 +1,15 @@
-<<<<<<< HEAD
-import time
-import csv
-from csv import writer
-import os.path
-from student import Student
-from job import Job
-import manage as m
-import main
-
-studentList = []  # student list used to add student object attributes and insert into file
-file_exists = os.path.exists('student_data.csv')
-if not file_exists:
-    file = open('student_data.csv', 'w')
-file = open("student_data.csv")
-reader = csv.reader(file)
-lines = len(list(reader))
-
-def max_accts():
-    # this makes sure we only support five accounts for first epic
-    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
-    if lines >= 5:
-        # if called, means no more accounts can be created1
-        print("All permitted accounts have been created, please come back later")
-        return True
-
-
-def append_list_as_row(file_name, list_of_elem):
-    # function that adds to file
-    # Open file in append mode
-    with open(file_name, 'a+', newline='') as write_obj:
-        # Create a writer object from csv module
-        csv_writer = writer(write_obj)
-        # Add contents of list as last row in the csv file
-        csv_writer.writerow(list_of_elem)
-
-print()
-
-def welcome():
-
-    print("Welcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
-    print("")
-    print("Are you a new user? Or do you already have an account? Select an option below")
-    decision = input("1. Create an account\n"
-    "2. Login\n"
-    "3. Find someone you know \n"
-    "4. Play the video \n"
-    "0. Exit\nYour selection: ")
-
-    if decision == "1":
-        register() #takes you to register screen
-    elif decision == "2":
-        #call the login method in Manage class
-        manage = m.Manage()
-        username_key = manage.login() #takes you to login screen
-        #if username is empty try again
-        if username_key == None:
-            welcome(decision)
-        else:
-            job_menu(username_key)
-
-    #find someone
-    elif decision == "3":
-        find_someone() #find someone function
-
-    #watch video
-    elif decision == "4":
-        print("\nVideo is now playing in 3 seconds!")
-        time.sleep(3)
-
-        main.main()
-    
-    #exit
-    elif decision == "0":
-        print("\nBye!!!")
-        exit()
-
-    else:
-        print("Invalid option, please try again")
-        decision = input("1. Create an account\n2. Login\n3. Find someone you know \n4. Play the video \nYour selection: ")
-        welcome(decision)
-
-#menu_job
-def job_menu(username_key):
-    print("1. Search for job/internship")
-    print("2. Post a job")
-    print("3. Learn a new skill")
-    print("4. Log out")
-    print("5. Exit program")
-    choice = input("Your selection: ")
-
-    if (choice == "1"):
-        print("Under construction for now"
-              " returning to menu")
-
-        job_menu(username_key)
-    elif (choice == "2"):       
-        job_manage = m.Manage()
-        job_manage.post_new_job(username_key)
-
-        job_menu(username_key)
-    elif(choice == "3"):
-        menu_learnskill()
-    elif(choice == "4"):
-        main()
-    elif(choice == "5"):
-        exit()
-
-
-# this is after find_someone runs and is able to find somone 
-#prompts the user to register/login since their friend has an account
-def join_Incollege():
-    print("Select one of the options below: ")
-    print("1. Log in")
-    print("2. Sign up")
-    print("3. Return to homescreen")
-    decision = input("Your selection: ")
-    
-    if(decision == "1"):
-        manage = m.Manage()
-        #takes you to login screen
-        username_key = manage.login()
-        #if username is empty try again
-        if username_key == None:
-            welcome(decision)
-        else:
-            job_menu(username_key)
-
-    elif(decision == "2"):
-        register()
-    elif(decision == "3"):
-        main.main()
-
-
-def checkPass(password):
-    # minimum 8 character
-    if len(password) < 8:
-        return False
-
-    # max 12 characters
-    if len(password) > 12:
-        return False
-
-    # Has an uppercase
-    if not any(character.isupper() for character in password):
-        return False
-
-    # at least one digit
-    if not any(character.isdigit() for character in password):
-        return False
-
-    # at least one non_alpha
-    if password.isalnum():
-        return False
-
-    return True
-
-
-def checkUsername(username):
-    # ensures unique username when creating account
-    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
-    # loop through the csv list
-    for line in csv_file:
-        if username in line:
-            return False
-    return True
-
-def menu_learnskill(): #we can change the skills, these are just what came to mind
-    print("")
-    print("1. Learn C")
-    print("2. Learn Java")
-    print("3. Learn Python")
-    print("4. Learn SQL")
-    print("5. Learn C++")
-    print("6. Return to menu")
-    choice = input("Your selection: ")
-
-    if (choice == "1"):
-        print()
-        print("Under construction for now"
-              " returning to menu")
-        menu_learnskill() # this will change
-    elif(choice == "2"):
-        print()
-        print("Under construction for now"
-              " returning to menu")
-        menu_learnskill() # this will change
-    elif(choice == "3"):
-        print()
-        print("Under construction for now"
-              " returning to menu")
-        menu_learnskill() # this will change
-    elif(choice == "4"):
-        print()
-        print("Under construction for now"
-              " returning to menu")
-        menu_learnskill() # this will change
-    elif(choice == "5"):
-        print()
-        print("Under construction for now"
-              " returning to menu")
-        menu_learnskill() # this will change
-    elif(choice == "6"):
-        job_menu()
-
-
-def register():
-
-    # Checks if the max accounts have been reached
-    maxAccountFlag = max_accts()
-    if maxAccountFlag:
-        quit()
-
-    # take input
-    username = input("Enter username: ")
-    password = input("Enter your password: ")
-    firstname = input("Enter your first name: ")
-    lastname = input("Enter your last name: ")
-
-    # this is capitalizing the first letter of first and last name
-    a_string = firstname 
-    firstname = a_string.title()
-    a_string = lastname
-    lastname = a_string.title()
-
-    # This block checks password
-    flag = checkPass(password)
-    while not flag:
-        print("Invalid password. Password must be between 8-12 characters"
-              " and contain one uppercase letter, one digit, and one non-alpha character")
-        password = input("Enter your password: ")
-        flag = checkPass(password)
-
-    # This block checks for unique username
-    flag = checkUsername(username)
-    while not flag:
-        print("Username already exists. Please try again")
-        username = input("Enter username: ")
-        flag = checkUsername(username)
-
-    # If they make it here, everything is good so we can create student object and add them to list and insert into file
-    student = Student(username, password, firstname, lastname)
-    studentList.extend([student.user_name, student.password, student.first, student.last])
-    append_list_as_row('student_data.csv', studentList)
-    print("Account successfully created, come back next time and login!")
-
-
-def find_someone():
-    firstname = input("Enter first name: ")
-    lastname = input("Enter last name: ")
-
-    #capitalizing first letter of first and last name
-    #this is needed because if they write the persons name in lowercase
-    #it will say the name is not there
-    a_string = firstname
-    firstname = a_string.title()
-    a_string = lastname
-    lastname = a_string.title()
-
-    flag = findFirstName(firstname)
-    flag2 = findLastName(lastname)
-    # both username and password have to exist in file to reach successful login
-    if not flag and not flag2:
-        print("They are not yet a part of the InCollege system yet")
-        decision = input("Press 1 to go back to the menu: ")
-        back_to_menu(decision)
-    print("They are a part of the InCollege system")
-    print("Join them!")
-    print()
-    join_Incollege()
-
-
-def back_to_menu(decision): #gives user a chance to go back to menu at any point
-    if decision == '1':
-        welcome()
-    while decision != '1':
-        decision = input("Invalid input, please press 1 to go back to menu: ")
-    welcome()
-        
-
-def findFirstName(firstname):
-    # searches file for username for login
-    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
-    # loop through the csv list
-    for line in csv_file:
-        if firstname in line:
-            return True
-    return False
-
-
-def findLastName(lastname):
-    #fdsfsdfsdf
-    # searches file for username for login
-    csv_file = csv.reader(open("student_data.csv", "r"), delimiter=",")
-    # loop through the csv list
-    for line in csv_file:
-        if lastname in line:
-            return True
-    return False
-=======
 import time
 import manage as m
 import utility
 import csv
 import friend
 
+#2 changes here
+#FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+#FILE_SAVE_MES = "messages.csv"
+
+FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+FILE_SAVE_MES = "messages.csv"
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_APP = "applications.csv"
 FILENAME_SETTINGS = "settings.csv"
@@ -353,24 +59,28 @@ def Welcome_Page():
 
 def Login_Page(name):
     friend.check_requests(name)
+    #maybe add check_application(name) here?
+    check_messages(name)
+
     print()
     print("\nSelect one of the below options:")
-    print("1. Create Profile")
-    print("2. View Profile")
+    print("1. Create Profile")#
+    print("2. View Profile")#
     print("3. Search for job/internship")
-    print("4. Post a Job")
-    print("5. Delete a Job")
-    print("6. Search a Job")
-    print("7. Learn a New Skill")
-    print("8. Useful Links")
-    print("9. inCollege Important Links")
-    print("10. Connect with Friends")
-    print("11. My Connections")
-    print("12. Log Out")
+    print("4. Post a Job") #
+    print("5. Delete a Job") #
+    print("6. Search a Job")#
+    print("7. Learn a New Skill")#
+    print("8. Useful Links")#
+    print("9. inCollege Important Links")#
+    print("10. Connect with Friends") #
+    print("11. My Connections")#
+    print("12. Send a Message")
+    print("13. Log Out")
     decision = input("\nYour selection: ")
 
-    # Used for input validation. User should only choose a value 1-11
-    decision = utility.checkUserInput(decision, 1, 11)
+    # Used for input validation. User should only choose a value 1-12
+    decision = utility.checkUserInput(decision, 1, 13)
 
     if decision == "1":
         manage = m.Manage()
@@ -432,6 +142,8 @@ def Login_Page(name):
     elif decision == "11":
         friend.show_connection(name)
     elif decision == "12":
+        send_message(name)
+    elif decision == "13":
         Welcome_Page()
 
 
@@ -990,4 +702,165 @@ def delete_application(name, title):
         ApplicW = csv.writer(f2)
         for ele in n:
             ApplicW.writerow(ele)
->>>>>>> Epic6
+
+
+############################ EPIC 7 MESSAGING ##############################################
+
+def get_friends(name):
+    fri_list = [] #grabbing usernames
+    with open (FILENAME_FRIEND, "r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and row [0] == name and (row[1] not in fri_list):
+                fri_list.append(row[1])
+            elif row != [] and row [1] == name and (row [0] not in fri_list):
+                fri_list.append(row[0])
+
+    return fri_list
+
+
+#PRINTS ALL THE PROFILES IN student.csv
+def all_profiles(name):
+    names_list = list()
+    username_list = list()
+    empty = []
+
+    with open(FILENAME_STUDENT, 'r') as readFile:
+        reader = csv.reader(readFile)
+        for row in reader:
+            if (row != empty) and (row[0] != name) and (row[0] != "User_Name"): #for empty space, which we dont want
+                username_list.append(row[0])
+                names_list.append(row[2]+" "+row[3]) #first and last name
+
+    i = 0
+    print("InCollege Users: ")
+    while i < len(names_list):
+        print(str(i+1)+". "+names_list[i])
+        i += 1
+    return username_list
+
+
+#SENDS MESSAGE TO A FRIEND (OR ANYONE IF PLUS MEMBER)
+def send_message(name):
+    with open(FILENAME_STUDENT, 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row != [] and (row[0] == name):
+                tier = row[4] #find what tier the person is
+
+    #Display all people in student.csv
+    all_users = all_profiles(name)
+    valid_users = get_friends(name)
+
+    #Choose a user to send a message via numbered list
+    choice = input("Enter the corresponding number for which user to message: ")
+    choice = utility.checkUserInput(choice,1,len(all_users)) # fixed its in utility
+    sendMessageTo = all_users[int(choice)-1] 
+    allowToSend = False
+
+    if tier == "standard":
+        for x in valid_users:
+            if x == sendMessageTo:
+                allowToSend = True
+    elif tier == "plus": 
+        allowToSend = True
+
+    #See if we send the message or not (depending on tier level)
+    if allowToSend == True:
+        manage = m.Manage()
+        message = input("Type the message you want to send to "+sendMessageTo+":\n")
+        manage.add_pending_message(name, sendMessageTo, message)
+        print("Message sent!")
+    else: 
+        print("Sorry, you must be friends with that person to send messages")
+
+    #Menu
+    print("Select one of the below options:")
+    print("(1) Send another message")
+    print("(2) Return to Log In Screen")
+    choice = input("Your selection: ")
+    choice = utility.checkUserInput(choice,1,2)
+
+    if (choice == "1"):
+        send_message(name)
+    else:
+        Login_Page(name)
+
+
+#NOTIFIES USER THAT THEY HAVE RECEIVED A MESSAGE AND ALLOWS THEM THE OPTION TO CHECK
+#IF THEY DO NOT WANT TO CHECK, NEXT TIME THEY LOGIN IT WILL PROMPT AGAIN
+def check_messages(name):
+    message_list = [] #(from, message) in this format
+    with open (FILENAME_MES, "r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and row [1] == name:
+                message_list.append((row[0],row[1], row[2]))
+
+    if len(message_list) > 0:
+        print ("You have recieved messages from some people!")
+        for info in message_list:   
+            From, To, Message = info
+            print()
+            print ("Do you want to see the message from: " + "\"" + From + "\"")
+            print("Select one of the below options:")
+            print("(1) Yes")
+            print("(2) No")
+            choice = input("Your selection: ")
+            choice = utility.checkUserInput(choice,1,2)
+
+            if choice == "1":
+                print()
+                print(Message)
+                print ("Do you want to save the message from: " + "\"" + From + "\"")
+                print("Select one of the below options:")
+                print("(1) Yes")
+                print("(2) No")
+                choice = input("Your selection: ")
+                choice = utility.checkUserInput(choice,1,2)
+
+                if (choice == "1"):
+                    add_message(From,To,Message) 
+                    delete_pending_message(From, To, Message) 
+                    print("Do you want to respond the message from " + "\"" + From + "\"")
+                    print("Select one of the below options:")
+                    print("(1) Yes")
+                    print("(2) No")
+                    choice = input("Your selection: ")
+                    choice = utility.checkUserInput(choice,1,2)
+                    if choice == "1":
+                        text = input ("Please type a message: ")
+                        with open(FILENAME_MES,"a") as file:
+                            writer = csv.writer(file)
+                            writer.writerow((To, From, text))
+                        print("The message was sent to " + "\"" + From + "\"")
+                    elif choice == "2":
+                        pass
+
+                elif  choice == "2":
+                    delete_pending_message(From, To, Message)
+            elif choice == "2":
+                pass
+
+
+#NEW MESSAGE FOR message.csv
+def add_message(From, To, Message):
+    with open(FILE_SAVE_MES, "a") as file:
+        writer = csv.writer(file)
+        writer.writerow((From, To, Message))
+
+
+#DELETE ROW FROM pending_message.csv
+def delete_pending_message (From, To, Message):
+    delete_list = []
+    with open(FILENAME_MES,"r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and (row[0] != From or row[1] != To or row[2] != Message):
+                delete_list.append(tuple(row))
+
+    with open(FILENAME_MES,"w") as file:
+        writer_csv = csv.writer(file)
+        for info in delete_list:
+            writer_csv.writerow(info)
+
