@@ -3,20 +3,31 @@ import manage as m
 import utility
 import csv
 import friend
+from datetime import datetime
+from datetime import timedelta
 
 #2 changes here
 #FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
 #FILE_SAVE_MES = "messages.csv"
 
-FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
-FILE_SAVE_MES = "messages.csv"
 FILENAME_STUDENT = "student_data.csv"
-FILENAME_APP = "applications.csv"
-FILENAME_SETTINGS = "settings.csv"
-FILENAME_PROFILE = "profiles.csv"
 FILENAME_JOB = "job_data.csv"
+FILENAME_SETTINGS = "settings.csv"
+
+FILENAME_PROFILE = "profiles.csv"
 FILENAME_FRIEND = "friends.csv"
 FILENAME_REQUEST = "requests.csv"
+FILENAME_APP = "applications.csv"
+FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+FILE_SAVE_MES = "messages.csv"
+
+#new for Epic 8
+FILENAME_NEW_USER = "new_user.csv"
+FILENAME_NEW_JOB = "new_job_notif.csv"
+FILENAME_DEL_JOB = "del_jobs_notif.csv"
+
+
+
 blank_string = " "
 
 
@@ -61,6 +72,15 @@ def Login_Page(name):
     friend.check_requests(name)
     #maybe add check_application(name) here?
     check_messages(name)
+    #check application
+    check_application(name)
+    #Epic 8, check profile_creation
+    check_profile_creation(name)
+    #check_new_user(name)
+    check_new_user(name)
+    check_applied_in_seven_days(name)
+    check_new_job(name)
+    check_del_job(name)
 
     print()
     print("\nSelect one of the below options:")
@@ -188,7 +208,19 @@ def LearnSkill_Page(name):
 def Register_Page():
     manage = m.Manage()
     name = manage.register()
+    lines = list()
     if name != None:  # sign up successfully
+        #add name to new_user.txt
+        lines.append(name)
+        with open(FILENAME_STUDENT, "r") as file:
+            reader_csv = csv.reader(file)
+            for row in reader_csv:
+                if row != []:
+                    lines.append(row[0])
+        
+        with open(FILENAME_NEW_USER, "a") as file1:
+            writer_csv = csv.writer(file1)
+            writer_csv.writerow(lines)
         Login_Page(name)
     else:
         print()
@@ -532,6 +564,7 @@ def GeneralLinks_Page(value, name):
 def job_Screen(name):
     decision = 0
     while(decision != 5):
+        check_number_jobs_applied(name)
         print("Welcome to the Job Screen please enter your selection on the menu below")
         print("1. View all jobs")
         print("2. View jobs that you have applied to")
