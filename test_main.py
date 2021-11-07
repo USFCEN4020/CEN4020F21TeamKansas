@@ -474,3 +474,38 @@ class TestClass:
                         flag = 1
 
         assert flag == 0
+
+'''------------------------------------------Epic 8 tests---------------------------------------'''
+if (not os.path.exists("new_user.csv")):
+    open("new_user.csv", 'w').close()
+
+if (not os.path.exists("profiles.csv")):
+    open("profiles.csv", 'w').close()
+
+def test_profile_notification():
+    usern1 = "TestP"
+    usern2 = "NoTestP"
+
+    flag = 1
+
+    with open("profiles.csv","a") as f:
+        Pwriter = csv.writer(f)
+        Pwriter.writerow((usern1,"T","M","U","B","E","Ed"))
+
+    flag = c.check_profile_creation(usern1)
+    assert flag == 0
+
+    flag = c.check_profile_creation(usern2)
+    assert flag == 1
+
+    str = []
+    with open("profiles.csv","r") as f2:
+        Preader = csv.reader(f2)
+        for row in Preader:
+            if row != [] and row[0] != usern1:
+                str.append(tuple(row))
+
+    with open("profiles.csv","w") as f3:
+        writer_csv = csv.writer(f3)
+        for element in str:
+            writer_csv.writerow(element)
