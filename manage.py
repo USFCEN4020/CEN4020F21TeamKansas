@@ -7,6 +7,8 @@ import settings as set
 import profiles as p
 import save_job as sa
 from datetime import datetime
+from datetime import timedelta
+from datetime import date
 
 FILENAME_STUDENT = "student_data.csv"
 FILENAME_JOB = "job_data.csv"
@@ -16,8 +18,10 @@ FILENAME_FRIEND = "friends.csv"
 FILENAME_REQUEST = "requests.csv"
 FILENAME_APP = "applications.csv"
 FILENAME_SAVE_JOB ="save_job.csv"
-FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
+FILENAME_MES = "pending_messages.csv"
 FILE_SAVE_MES = "messages.csv"
+FILENAME_NEW_JOB = "new_jobs_notif.csv"
+FILENAME_DEL_JOB = "del_jobs_notif.csv"
 
 class Manage:
     def __init__(self):
@@ -30,7 +34,7 @@ class Manage:
         if not os.path.isfile(FILENAME_SAVE_JOB):
             with open(FILENAME_SAVE_JOB, "w") as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("User_Name", "Title"))
+                #writer_csv.writerow(("User_Name", "Title"))
 
         with open(FILENAME_SAVE_JOB, "r") as file:
             reader_csv = csv.reader(file)
@@ -47,7 +51,7 @@ class Manage:
         if not os.path.isfile(FILENAME_STUDENT):
             with open(FILENAME_STUDENT,'a') as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("User_Name","Password","First_Name","Last_Name","Tier"))
+                #writer_csv.writerow(("User_Name","Password","First_Name","Last_Name","Tier","DayOFLastJobApplication"))
 
         # Add data from student_data.csv to student_list
         with open(FILENAME_STUDENT,'r') as file:
@@ -61,7 +65,7 @@ class Manage:
         if not os.path.isfile(FILENAME_JOB):
             with open(FILENAME_JOB,'a') as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Poster_Name"))
+                #writer_csv.writerow(("Title", "Description", "Employer", "Location", "Salary", "Poster_Name"))
 
         # Add data from job_data to job_list
         with open(FILENAME_JOB,'r') as file:
@@ -74,7 +78,7 @@ class Manage:
         if not os.path.isfile(FILENAME_SETTINGS):
             with open(FILENAME_SETTINGS, "w") as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
+                #writer_csv.writerow(("user", "email_notifications", "sms_notifications", "targeted_ads", "language_set"))
 
         # Adds data from settings.csv to settings_list
         with open(FILENAME_SETTINGS, "r") as file:
@@ -87,7 +91,7 @@ class Manage:
         if not os.path.isfile(FILENAME_PROFILE):
             with open(FILENAME_PROFILE, "w") as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow(("user", "title", "major", "university", "biography", "experience", "education"))
+                #writer_csv.writerow(("user", "title", "major", "university", "biography", "experience", "education"))
 
         # Adds data from profiles.csv to profiles_list
         with open(FILENAME_PROFILE, "r") as file:
@@ -95,6 +99,23 @@ class Manage:
             for item in reader_csv:
                 if item != []:
                     self.profiles_list.append(p.Profiles(item[0], item[1], item[2], item[3], item[4], item[5], item[6]))
+    
+        if not os.path.isfile(FILENAME_PROFILE):
+            with open(FILENAME_MES,"w") as file:
+                writer_csv = csv.writer(file)
+
+        #add title for the new_jobs.csv
+        if not os.path.isfile(FILENAME_NEW_JOB):
+            with open(FILENAME_NEW_JOB,"w") as file:
+                writer_csv = csv.writer(file)
+                #writer_csv.writerow(("jobTitle", "List of NOT seen"))
+
+        #create del_job_app file
+        if not os.path.isfile(FILENAME_DEL_JOB):
+            with open(FILENAME_DEL_JOB,"w") as file:
+                writer_csv = csv.writer(file)
+                #writer_csv.writerow(("user", "appliedTo", "and some"))
+
 
 
     def get_list(self):
@@ -174,6 +195,32 @@ class Manage:
             for element in self.__list_save_job:
                 writer_csv.writerow((element.get_username(), element.get_title()))
 
+    ###########################################################################    
+        #for deleting the applications related to the job and notifying them about it
+        self.job_list.clear()
+
+        #name of those who need to be notified of deleted job
+        notify_applicants = list()
+
+        with open (FILENAME_APP, "r") as file:
+            reader_csv = csv.reader(file)
+            for row in reader_csv:
+                if (row != []) and (row [1] == title):
+                    notify_applicants.append(row)
+                elif (row != []):
+                    self.__list_job.append(row)
+
+        with open (FILENAME_APP, "w") as file:
+            writer_csv = csv.writer(file)
+            for element in self.__list_job:
+                writer_csv.writerow(element)
+
+        with open (FILENAME_DEL_JOB, "a") as file:
+            writer_csv = csv.writer(file)
+            for element in notify_applicants:
+                writer_csv.writerow(element)
+    ######################################################################
+
     def delete_save_job(self, name, title):
         self.__list_save_job.clear()
         with open(FILENAME_SAVE_JOB, "r") as file:
@@ -204,6 +251,30 @@ class Manage:
         with open(FILENAME_MES, "a") as file:
             writer = csv.writer(file)
             writer.writerow((From, To, Message))
+
+    def save_date_LastJobAppliedTo(self, name):
+        today_ = datetime.today()
+        today = today_.strftime('%Y-%m-%d 00:00:00')
+
+        lines = list()
+        #files have to be overwritten
+        with open(FILENAME_STUDENT, "r") as file:
+            reader = csv.reader(file)
+            _lines = list(reader)
+            for row in _lines:
+                if(row != []):
+                    lines.append(row)
+
+            #look for student by user 'name' and add to row[5]    
+            for row in lines:
+                if (row != []) and (row[0] == name):
+                    row[5] = today
+                    break
+
+        with open(FILENAME_STUDENT, "w") as file:
+            writer = csv.writer(file)
+            writer.writerows(lines)
+
 
     def login(self):
         # creates a new Manage object
@@ -299,6 +370,14 @@ class Manage:
         location = input("Enter Job Location: ")
         salary = input("Enter Job Salary: ")
 
+        temp_entry = list()
+        temp_entry.append(title)
+        for user in all_users():
+            temp_entry.append(user)
+        with open(FILENAME_NEW_JOB,"a") as file:
+            writer_csv = csv.writer(file)
+            writer_csv.writerow(temp_entry) 
+
         account = utility.InputValueClass()
         # Check if the salary is correct
         while not account.check_isNumber(salary):
@@ -323,7 +402,7 @@ class Manage:
 
             with open(FILENAME_STUDENT, "a") as file:
                 writer_csv = csv.writer(file)
-                writer_csv.writerow((student.get_user_name(),student.get_password(),student.get_first(),student.get_last(),student.get_tier()))
+                writer_csv.writerow((student.get_user_name(),student.get_password(),student.get_first(),student.get_last(),student.get_tier(), "0"))
 
             # Sets the default settings for the user.
             with open(FILENAME_SETTINGS, "a") as file_stg:
@@ -569,4 +648,17 @@ def compare_dates(date1, date2):
     date1 = datetime.strptime(date1, '%m/%d/%Y')
     date2 = datetime.strptime(date2, '%m/%d/%Y')
     return date1<date2
+
+
+def all_users():
+    username = list()
+
+    with open(FILENAME_STUDENT, "r") as file:
+        reader = csv.reader(file)
+        lines = list(reader)
+        for row in lines:
+            if(row != []) and (row[0] != "User_Name"):
+                username.append(row[0])
+
+    return username
 

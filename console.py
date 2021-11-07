@@ -3,10 +3,9 @@ import manage as m
 import utility
 import csv
 import friend
-
-#2 changes here
-#FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
-#FILE_SAVE_MES = "messages.csv"
+#import os.path
+from datetime import datetime
+from datetime import timedelta
 
 FILENAME_MES = "pending_messages.csv" #FromThisUsername, ToThisUsername, the Message
 FILE_SAVE_MES = "messages.csv"
@@ -17,6 +16,10 @@ FILENAME_PROFILE = "profiles.csv"
 FILENAME_JOB = "job_data.csv"
 FILENAME_FRIEND = "friends.csv"
 FILENAME_REQUEST = "requests.csv"
+FILENAME_POL = "policy.csv"
+FILENAME_NEW_USER = "new_user.csv"
+FILENAME_NEW_JOB = "new_jobs_notif.csv"
+FILENAME_DEL_JOB = "del_jobs_notif.csv"
 blank_string = " "
 
 
@@ -58,29 +61,42 @@ def Welcome_Page():
 
 
 def Login_Page(name):
-    friend.check_requests(name)
+    #friend.check_requests(name)
     #maybe add check_application(name) here?
-    check_messages(name)
+    #check_messages(name)
+
+    print("Enter 1 to check any notifications. Enter 0 to continue")
+    pick = input("Your selection: ")
+    pick = utility.checkUserInput(pick, 0, 1)
+    if pick == "1":
+        friend.check_requests(name)
+        check_application(name)
+        check_application(name)
+        check_messages(name)
+        check_profile_creation(name)
+        check_new_user(name)
+        check_applied_in_seven_days(name)
+        check_new_job(name)
+        check_del_job(name)
 
     print()
     print("\nSelect one of the below options:")
     print("1. Create Profile")#
     print("2. View Profile")#
-    print("3. Search for job/internship")
+    print("3. Search a job")#
     print("4. Post a Job") #
     print("5. Delete a Job") #
-    print("6. Search a Job")#
-    print("7. Learn a New Skill")#
-    print("8. Useful Links")#
-    print("9. inCollege Important Links")#
-    print("10. Connect with Friends") #
-    print("11. My Connections")#
-    print("12. Send a Message")
-    print("13. Log Out")
+    print("6. Learn a New Skill")#
+    print("7. Useful Links")#
+    print("8. inCollege Important Links")#
+    print("9. Connect with Friends") #
+    print("10. My Connections")#
+    print("11. Send a Message")
+    print("12. Log Out")
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-12
-    decision = utility.checkUserInput(decision, 1, 13)
+    decision = utility.checkUserInput(decision, 1, 12)
 
     if decision == "1":
         manage = m.Manage()
@@ -130,20 +146,18 @@ def Login_Page(name):
             print("\nYou have not posted any jobs so far")
             Login_Page(name)
     elif decision == "6":
-        job_Screen(name)
-    elif decision == "7":
         LearnSkill_Page(name)
-    elif decision == "8":
+    elif decision == "7":
         UsefulLinks_Page(1, name)
-    elif decision == "9":
+    elif decision == "8":
         ImportantLinks_Page(1, name)
-    elif decision == "10":
+    elif decision == "9":
         friend.search_friend(name)
-    elif decision == "11":
+    elif decision == "10":
         friend.show_connection(name)
-    elif decision == "12":
+    elif decision == "11":
         send_message(name)
-    elif decision == "13":
+    elif decision == "12":
         Welcome_Page()
 
 
@@ -188,8 +202,20 @@ def LearnSkill_Page(name):
 def Register_Page():
     manage = m.Manage()
     name = manage.register()
+    lines = list()
     if name != None:  # sign up successfully
+        lines.append(name)
+        with open(FILENAME_STUDENT, "r") as file1:
+            reader_csv1 = csv.reader(file1)
+            for row1 in reader_csv1:
+                if row1 != []:
+                    lines.append(row1[0])
+
+        with open(FILENAME_NEW_USER, "a") as file:
+            writer_csv = csv.writer(file)
+            writer_csv.writerow(lines)
         Login_Page(name)
+    #add name to new_user file
     else:
         print()
         print("Select one of the below options:")
@@ -532,6 +558,7 @@ def GeneralLinks_Page(value, name):
 def job_Screen(name):
     decision = 0
     while(decision != 5):
+        check_num_jobs_appliedto(name)
         print("Welcome to the Job Screen please enter your selection on the menu below")
         print("1. View all jobs")
         print("2. View jobs that you have applied to")
@@ -593,6 +620,7 @@ def job_Screen(name):
                             print("You have already applications to that job")
                         else:
                             manage.add_application(name, j[int(secDecision) - 1][0], j[int(secDecision) - 1][2])
+                            manage.save_date_LastJobAppliedTo(name)
                     elif (thirdDecision == "2"):  # Save
                         manage.add_save_job(name, j[int(secDecision) - 1][0])
 
@@ -724,6 +752,7 @@ def all_profiles(name):
     names_list = list()
     username_list = list()
     empty = []
+    valid_users = get_friends(name)
 
     with open(FILENAME_STUDENT, 'r') as readFile:
         reader = csv.reader(readFile)
@@ -735,7 +764,10 @@ def all_profiles(name):
     i = 0
     print("InCollege Users: ")
     while i < len(names_list):
-        print(str(i+1)+". "+names_list[i])
+        if(username_list[i] in valid_users):
+            print(str(i+1)+". " + username_list[i]+": "+names_list[i] + " - FRIEND")
+        else:
+            print(str(i+1)+". " + username_list[i]+": "+names_list[i])
         i += 1
     return username_list
 
@@ -786,6 +818,57 @@ def send_message(name):
     else:
         Login_Page(name)
 
+def check_profile_creation(name):
+    #Read profile name and if none match then send message
+    send_message = 1
+    with open(FILENAME_PROFILE, "r") as file:
+        reader_csv = csv.reader(file)
+        for row in reader_csv:
+            if row != [] and row[0] == name:
+                #if name found then don't send message.
+                send_message = 0
+    print_profile_notification(send_message)
+    return send_message
+
+def print_profile_notification(send_message):
+    if send_message == 1:
+        print("You have not created a profile yet! Please make a profile")
+
+def check_new_user(name):
+    overwrite = list()
+    check = 0
+    with open(FILENAME_NEW_USER, "r") as file:
+        reader = csv.reader(file)
+        user = list(reader) 
+        for row in user:
+            if(row == []):
+                continue
+            new_row = list()
+            if(row[0] == name):
+                for entry in row:
+                    new_row.append(entry)
+            else:
+                for entry in row:
+                    if entry == name:
+                        check = 1
+                        newName = row[0]
+                        with open(FILENAME_STUDENT, "r") as file1:
+                             reader_csv1 = csv.reader(file1)
+                             for row1 in reader_csv1:
+                                if row1 != [] and row1[0] == newName:
+                                    first_name = row1[2]
+                                    last_name = row1[3]
+                                    print(first_name +" " +last_name + " has joined in college")
+                    else:
+                        new_row.append(entry)
+            overwrite.append(new_row)
+
+    with open(FILENAME_NEW_USER, "w") as file:
+        writer = csv.writer(file)
+        writer.writerows(overwrite) 
+
+    return check
+
 
 #NOTIFIES USER THAT THEY HAVE RECEIVED A MESSAGE AND ALLOWS THEM THE OPTION TO CHECK
 #IF THEY DO NOT WANT TO CHECK, NEXT TIME THEY LOGIN IT WILL PROMPT AGAIN
@@ -819,28 +902,28 @@ def check_messages(name):
                 choice = input("Your selection: ")
                 choice = utility.checkUserInput(choice,1,2)
 
+                
                 if (choice == "1"):
                     add_message(From,To,Message) 
                     delete_pending_message(From, To, Message) 
-                    print("Do you want to respond the message from " + "\"" + From + "\"")
-                    print("Select one of the below options:")
-                    print("(1) Yes")
-                    print("(2) No")
-                    choice = input("Your selection: ")
-                    choice = utility.checkUserInput(choice,1,2)
-                    if choice == "1":
-                        text = input ("Please type a message: ")
-                        with open(FILENAME_MES,"a") as file:
-                            writer = csv.writer(file)
-                            writer.writerow((To, From, text))
-                        print("The message was sent to " + "\"" + From + "\"")
-                    elif choice == "2":
-                        pass
-
-                elif  choice == "2":
+                elif(choice == "2"):
                     delete_pending_message(From, To, Message)
-            elif choice == "2":
-                pass
+    
+                print("Do you want to respond the message from " + "\"" + From + "\"")
+                print("Select one of the below options:")
+                print("(1) Yes")
+                print("(2) No")
+                choice = input("Your selection: ")
+                choice = utility.checkUserInput(choice,1,2)
+
+                if choice == "1":
+                    text = input ("Please type a message: ")
+                    with open(FILENAME_MES,"a") as file:
+                        writer = csv.writer(file)
+                        writer.writerow((To, From, text))
+                    print("The message was sent to " + "\"" + From + "\"")
+                elif choice == "2":
+                    pass
 
 
 #NEW MESSAGE FOR message.csv
@@ -863,4 +946,70 @@ def delete_pending_message (From, To, Message):
         writer_csv = csv.writer(file)
         for info in delete_list:
             writer_csv.writerow(info)
+
+######################## JOB STUFF ###############################
+
+def check_applied_in_seven_days(name):
+    #checks if its been seven days since applying to a job
+    with open(FILENAME_STUDENT, "r") as file:
+        reader = csv.reader(file)
+        lines = list(reader)
+        for row in lines:
+            if (row != []) and (row[0] == name):
+                lastApplied = row[5]
+                _today =  datetime.today().strftime('%Y %m %d')
+                today = datetime.strptime(_today, '%Y %m %d')
+                sevenMinusToday = today+timedelta(days=-7)
+                if(row[5] != "0"):
+                    lastTime = datetime.strptime(lastApplied, '%Y-%m-%d %H:%M:%S')
+                    if(lastTime <= sevenMinusToday):
+                        #send job notification
+                        print("Remember – you're going to want to have a job when you graduate. Make sure that you start to apply for jobs today!")
+
+def check_num_jobs_appliedto(name):
+    with open(FILENAME_APP,"r") as file:
+                reader_csv = csv.reader(file)
+                i = 0
+                for row in reader_csv:
+                    if row != [] and row[0] == name:
+                        i += 1
+    print("\nYou have currently applied for "+str(i)+" job(s).")
+
+def check_new_job(name):
+    overwrite = list()
+
+    with open(FILENAME_NEW_JOB, "r") as file:
+        reader = csv.reader(file)
+        job = list(reader) 
+        for row in job: #each row is a 'job title', 'list of users who have not seen'
+            if(row == []):
+                continue
+            new_row = list()
+            if(row != []) and (row[0] != "jobTitle"):
+                for entry in row:
+                    if entry == name:
+                        print("A new job "+row[0]+" has been posted")
+                    else:
+                        new_row.append(entry)
+            overwrite.append(new_row)
+
+    with open(FILENAME_NEW_JOB, "w") as file:
+        writer = csv.writer(file)
+        writer.writerows(overwrite) 
+
+def check_del_job(name):
+    new_notif = list()
+
+    with open(FILENAME_DEL_JOB, "r") as file:
+        reader = csv.reader(file)
+        notif = list(reader) 
+        for row in notif:
+            if (row != []) and (row[0] == name):
+                print("The job \'"+row[1]+"\' you applied for has been deleted.")
+            elif (row != []):
+                new_notif.append(row)
+
+    with open(FILENAME_DEL_JOB, "w") as file:
+        writer = csv.writer(file)
+        writer.writerows(new_notif) 
 
