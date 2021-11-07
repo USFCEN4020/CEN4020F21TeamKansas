@@ -1012,4 +1012,3 @@ def check_del_job(name):
     with open(FILENAME_DEL_JOB, "w") as file:
         writer = csv.writer(file)
         writer.writerows(new_notif) 
-

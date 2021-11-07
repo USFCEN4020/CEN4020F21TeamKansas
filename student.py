@@ -25,4 +25,3 @@ class Student:
     #will be either 'standard' or 'plus'
     def get_tier(self):
         return self.__tier
-

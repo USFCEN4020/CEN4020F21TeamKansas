@@ -661,4 +661,3 @@ def all_users():
                 username.append(row[0])
 
     return username
-

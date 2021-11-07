@@ -24,4 +24,3 @@ class Job:
 
     def get_poster_name(self):
         return self.poster_name
-
