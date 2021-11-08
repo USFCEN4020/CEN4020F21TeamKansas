@@ -1,13 +1,13 @@
 # InCollege-Kansas
 
-Scrum Master:   Darshan Vala
+Scrum Master:   Panatda Wiangngoen
 
-Developer 1:    Matteo Vescera
+Developer 1:    Deric Wright
 
-Developer 2:    Stefano Visentin
+Developer 2:    Nghia Truong 
 
-Tester 1:       Panatda Wiangngoen
+Tester 1:       Darshan Vala
 
-Tester 2:       Deric Wright
+Tester 2:       Matteo Vescera
 
-Tester 3:       Nghia Truong 
+Tester 3:       Stefano Visentin
