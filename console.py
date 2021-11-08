@@ -3,7 +3,7 @@ import manage as m
 import utility
 import csv
 import friend
-#import os.path
+import os.path
 from datetime import datetime
 from datetime import timedelta
 
@@ -20,8 +20,11 @@ FILENAME_POL = "policy.csv"
 FILENAME_NEW_USER = "new_user.csv"
 FILENAME_NEW_JOB = "new_jobs_notif.csv"
 FILENAME_DEL_JOB = "del_jobs_notif.csv"
+FILENAME_COURSES = "courses.csv"
 blank_string = " "
 
+if(not os.path.exists(FILENAME_COURSES)):
+        open(FILENAME_COURSES, 'w').close()
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
 def Welcome_Page():
@@ -32,13 +35,14 @@ def Welcome_Page():
     print("2. Login to an existing account")
     print("3. Connect with someone you know")
     print("4. Play the video")
-    print("5. Useful Links")
-    print("6. InCollege Important Links")
-    print("7. Exit inCollege")
+    print("5. Training")
+    print("6. Useful Links")
+    print("7. InCollege Important Links")
+    print("8. Exit inCollege")
     decision = input("Your selection: ")
 
-    # Used for input validation. User should only choose a value 1-7
-    decision = utility.checkUserInput(decision, 1, 7)
+    # Used for input validation. User should only choose a value 1-8
+    decision = utility.checkUserInput(decision, 1, 8)
 
     if (decision == "1"):
         Register_Page()
@@ -53,10 +57,12 @@ def Welcome_Page():
         time.sleep(3)
         Welcome_Page()
     elif (decision == "5"):
-        UsefulLinks_Page(0, blank_string)
+        Training_Page()
     elif (decision == "6"):
-        ImportantLinks_Page(0, blank_string)
+        UsefulLinks_Page(0, blank_string)
     elif (decision == "7"):
+        ImportantLinks_Page(0, blank_string)
+    elif (decision == "8"):
         exit()
 
 
@@ -92,7 +98,8 @@ def Login_Page(name):
     print("9. Connect with Friends") #
     print("10. My Connections")#
     print("11. Send a Message")
-    print("12. Log Out")
+    print("12. InCollege Learning")
+    print("13. Log Out")
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-12
@@ -158,6 +165,8 @@ def Login_Page(name):
     elif decision == "11":
         send_message(name)
     elif decision == "12":
+        InCollege_Learning_Screen(name)
+    elif decision == "13":
         Welcome_Page()
 
 
@@ -1011,4 +1020,174 @@ def check_del_job(name):
 
     with open(FILENAME_DEL_JOB, "w") as file:
         writer = csv.writer(file)
-        writer.writerows(new_notif) 
+        writer.writerows(new_notif)
+
+
+#####################   Epic 9 Training   ########################
+
+def Training_Page():
+    print()
+    print("Select one of the below options:")
+    print("1. Training and Education")
+    print("2. IT Help Desk")
+    print("3. Business Analysis and Strategy")
+    print("4. Security")
+    print("5. Return to Main Menu")
+    choice = input("Your selection: ")
+    print()
+
+    if (choice == "1"):
+        Training_Education_Page()
+    elif (choice == "2"):
+        print("Coming soon!")
+        Welcome_Page()
+    elif (choice == "3"):
+        BusinessAnalysis_Screen()
+    elif (choice == "4"):
+        print("Coming soon!")
+        Welcome_Page()
+    elif (choice == "5"):
+        Welcome_Page()
+
+
+def Training_Education_Page():
+    print()
+    print("Select one of the below options:")
+    print("1. Inverview training")
+    print("2. programming training ")
+    print("3. Buisness training")
+    print("4. Medical training")
+    print("5. Go back to training screen")
+    choice = input("Your selection: ")
+    print()
+
+    if (choice == "1"):
+        print("Under Construction")
+        Training_Education_Page()
+    elif (choice == "2"):
+        print("Under Construction")
+        Training_Education_Page()
+    elif (choice == "3"):
+        print("Under Construction")
+        Training_Education_Page()
+    elif (choice == "4"):
+        print("Under Construction")
+        Training_Education_Page()
+    elif (choice == "5"):
+        Training_Page()
+
+
+def BusinessAnalysis_Screen():
+    print()
+    print("Trending Courses:")
+    print("1. How to use InCollege Learning")
+    print("2. Train the Trainer")
+    print("3. Gamification of Learning")
+    print("4. Not seeing what you’re looking for? Sign in to see all 7,609 results.")
+    print("5. Return to Main Menu")
+    choice = input("Your selection: ")
+    print()
+
+    if (choice == "1"):
+        sign_in()
+    elif (choice == "2"):
+        sign_in()
+    elif (choice == "3"):
+        sign_in()
+    elif (choice == "4"):
+        sign_in()
+    elif (choice == "5"):
+        Welcome_Page()
+
+
+def InCollege_Learning_Screen(name):
+    print()
+    check_Training(name)
+    choice = input("Your selection: ")
+    print()
+
+    if (choice == "1"):
+        completeTraining(name, "How to use InCollege Learning")
+    elif (choice == "2"):
+        completeTraining(name, "Train the Trainer")
+    elif (choice == "3"):
+        completeTraining(name, "Gamification of Learning")
+    elif (choice == "4"):
+        completeTraining(name, "Understanding the Architectural Design Process")
+    elif (choice == "5"):
+        completeTraining(name, "Project Management Simplified")
+    elif (choice == "6"):
+        Login_Page(name)
+
+
+def completeTraining(name, course):
+    with open(FILENAME_COURSES, newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+    for c in data:
+        if not c:
+            continue
+        else:
+            if (c[0] == name and c[1] == course):
+                choice = " "
+                while (choice.lower() != "yes" or choice.lower() != "No"):
+                    choice = input("You have already taken this course, do you want to take it again? (Yes/No)")
+                    if choice.lower() == "yes":
+                        print("You have now completed this training")
+                        InCollege_Learning_Screen(name)
+                    elif choice.lower() == "no":
+                        print("Course Cancelled")
+                        InCollege_Learning_Screen(name)
+    add_Course(name, course)
+    print("You have now completed this training")
+    InCollege_Learning_Screen(name)
+
+
+def check_Training(name):
+    one = ""
+    two = ""
+    three = ""
+    four = ""
+    five = ""
+    with open(FILENAME_COURSES, newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+
+    for c in data:
+        if not c:
+            continue
+        else:
+            if (c[0] == name):
+                if c[1] == "How to use InCollege Learning":
+                    one = " [Taken]"
+                elif c[1] == "Train the Trainer":
+                    two = " [Taken]"
+                elif c[1] == "Gamification of Learning":
+                    three = " [Taken]"
+                elif c[1] == "Understanding the Architectural Design Process":
+                    four = " [Taken]"
+                elif c[1] == "Project Management Simplified":
+                    five = " [Taken]"
+
+    print("Courses you can take:")
+    print("1. How to use InCollege Learning" + one)
+    print("2. Train the Trainer" + two)
+    print("3. Gamification of Learning" + three)
+    print("4. Understanding the Architectural Design Process" + four)
+    print("5. Project Management Simplified" + five)
+    print("6. Return to Main Menu")
+
+
+def add_Course(name, course):
+    with open(FILENAME_COURSES, "a") as file:
+        writer_csv = csv.writer(file)
+        writer_csv.writerow((name, course))
+
+
+def sign_in():
+    print("Sign into your INCollege Account")
+    name = None
+    while name == None:  # if the user fails when logging in the account
+        manage = m.Manage()  # create a new object Manage
+        name = manage.login()  # get user's name after logging in successful
+    Login_Page(name)
