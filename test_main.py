@@ -14,6 +14,7 @@ import profiles as p
 
 FILENAME_PROFILE = "profiles.csv"
 FILENAME_STUDENT = "student_data.csv"
+FILENAME_JOBS = "new_jobs_notif.csv"
 
 class TestClass:
     '''----------------------------------EPIC #1 TESTS-----------------------------------------------------'''
@@ -509,3 +510,7 @@ def test_profile_notification():
         writer_csv = csv.writer(f3)
         for element in str:
             writer_csv.writerow(element)
+
+'''------------------------------------------Epic 9 tests---------------------------------------'''
+'''No new tests to be added as Epic 9 only modifies console.py
+    and all manipulation in newly added code is opening files to read or write'''
