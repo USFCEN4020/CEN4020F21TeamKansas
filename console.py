@@ -4,6 +4,8 @@ import utility
 import csv
 import friend
 import os.path
+import student as s
+import job as j
 from datetime import datetime
 from datetime import timedelta
 
@@ -25,11 +27,40 @@ blank_string = " "
 
 if(not os.path.exists(FILENAME_COURSES)):
         open(FILENAME_COURSES, 'w').close()
+if(not os.path.exists("save_job.csv")):
+        open("save_job.csv", 'w').close()
+if(not os.path.exists("courses.csv")):
+        open("courses.csv", 'w').close()
+if(not os.path.exists(FILENAME_APP)):
+        open(FILENAME_APP, 'w').close()
+if(not os.path.exists("MyCollege_appliedJobs.txt")):
+    open("MyCollege_appliedJobs.txt", 'w').close()
+if(not os.path.exists("MyCollege_jobs.txt")):
+    open("MyCollege_jobs.txt", 'w').close()
+if(not os.path.exists("MyCollege_profiles.txt")):
+    open("MyCollege_profiles.txt", 'w').close()
+if(not os.path.exists("MyCollege_savedJobs.txt")):
+    open("MyCollege_savedJobs.txt", 'w').close()
+if(not os.path.exists("MyCollege_users.txt")):
+    open("MyCollege_users.txt", 'w').close()
+if(not os.path.exists("newJobs.txt")):
+    open("newJobs.txt", 'w').close()
+if(not os.path.exists("studentAccounts.txt")):
+    open("studentAccounts.txt", 'w').close()
+if(not os.path.exists("newtraining.txt")):
+    open("newtraining.txt", 'w').close()
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
 def Welcome_Page():
     print("\nWelcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
     print("")
+
+    print("The following additions (or refusals) are from the API:")
+    read_newJobs()
+    read_studentAccounts()
+    read_savedJobs()
+    read_appliedJobs()
+
     print("Are you a new user? Or do you already have an account? Select an option below")
     print("1. Create an account")
     print("2. Login to an existing account")
@@ -633,6 +664,9 @@ def job_Screen(name):
                     elif (thirdDecision == "2"):  # Save
                         manage.add_save_job(name, j[int(secDecision) - 1][0])
 
+            read_savedJobs()
+            read_appliedJobs()
+
         # View jobs JobA to
         elif (decision == "2"):
             print("Here are the jobs you have applied to:")
@@ -700,6 +734,7 @@ def job_Screen(name):
 
                 elif (secDecision == "2"):
                     pass
+            read_savedJobs()
 
         if(decision == "5"):
             Login_Page(name)
@@ -1026,13 +1061,21 @@ def check_del_job(name):
 #####################   Epic 9 Training   ########################
 
 def Training_Page():
+    TrainingList = read_Training()
     print()
     print("Select one of the below options:")
     print("1. Training and Education")
     print("2. IT Help Desk")
     print("3. Business Analysis and Strategy")
     print("4. Security")
-    print("5. Return to Main Menu")
+    i = 4
+
+    if TrainingList != 0:
+        for c in TrainingList:
+            i = i + 1
+            print("(" + str(i) + ") " + c, end='\n')
+    i = i + 1
+    print("(" + str(i) + ") Return to Main Menu")
     choice = input("Your selection: ")
     print()
 
@@ -1040,13 +1083,16 @@ def Training_Page():
         Training_Education_Page()
     elif (choice == "2"):
         print("Coming soon!")
-        Welcome_Page()
+        Training_Page()
     elif (choice == "3"):
         BusinessAnalysis_Screen()
     elif (choice == "4"):
-        print("Coming soon!")
+        print("coming soon!")
+        Training_Page()
+    elif (choice == str(i)):
         Welcome_Page()
-    elif (choice == "5"):
+    else:
+        print("coming soon!")
         Welcome_Page()
 
 
@@ -1101,6 +1147,7 @@ def BusinessAnalysis_Screen():
 
 
 def InCollege_Learning_Screen(name):
+    TrainingList = read_Training()
     print()
     check_Training(name)
     choice = input("Your selection: ")
@@ -1116,8 +1163,15 @@ def InCollege_Learning_Screen(name):
         completeTraining(name, "Understanding the Architectural Design Process")
     elif (choice == "5"):
         completeTraining(name, "Project Management Simplified")
-    elif (choice == "6"):
-        Login_Page(name)
+    else:
+        i = 5
+        for c in TrainingList:
+            i = i + 1
+            if choice == str(i):
+                completeTraining(name, c)
+        i = i + 1
+        if (choice == str(i)):
+            Login_Page(name)
 
 
 def completeTraining(name, course):
@@ -1139,11 +1193,13 @@ def completeTraining(name, course):
                         print("Course Cancelled")
                         InCollege_Learning_Screen(name)
     add_Course(name, course)
+    write_Training()
     print("You have now completed this training")
     InCollege_Learning_Screen(name)
 
 
 def check_Training(name):
+    TrainingList = read_Training()
     one = ""
     two = ""
     three = ""
@@ -1175,7 +1231,19 @@ def check_Training(name):
     print("3. Gamification of Learning" + three)
     print("4. Understanding the Architectural Design Process" + four)
     print("5. Project Management Simplified" + five)
-    print("6. Return to Main Menu")
+    i = 5
+    for d in TrainingList:
+        i = i + 1
+        taken = ""
+        for f in data:
+            if not f:
+                continue
+            if f[0] == name and f[1] == d:
+                taken = " [Taken]"
+        print("(" + str(i) + ") " + d + taken)
+
+    i = i + 1
+    print("(" + str(i) + ") Return to Main Menu")
 
 
 def add_Course(name, course):
@@ -1191,3 +1259,151 @@ def sign_in():
         manage = m.Manage()  # create a new object Manage
         name = manage.login()  # get user's name after logging in successful
     Login_Page(name)
+
+
+############# Epic 10 #####################
+
+def read_newJobs():
+    if os.path.exists("newJobs.txt"):
+        manage = m.Manage()
+        lines = list()
+        jobs = list()
+        f = open("newJobs.txt", "r")
+        lines = f.readlines()
+        f.close()
+        i = 0
+        title = ""
+        description = ""
+        employer = ""
+        location = ""
+        salary = 0
+        poster = ""
+        while(i < len(lines)):
+            title = lines[i]
+            i = i+1
+            description = ""
+            while(lines[i] != "&&&\n"):
+                description += (lines[i].rstrip('\n') + ' ')
+                i = i+1
+            i = i+1
+            employer = lines[i]
+            i = i+1
+            location = lines[i]
+            i = i+1
+            salary = int(lines[i])
+            i = i+1
+            poster = lines[i]
+            i = i+1
+            i = i+1
+            newJ = j.Job(title.rstrip('\n'), description.rstrip('\n'), employer.rstrip('\n'), location.rstrip('\n'), salary, poster.rstrip('\n'))
+            manage.add_job(newJ, "API_Input")
+            jobs.append(newJ)
+        return jobs
+
+
+def read_studentAccounts():
+    if os.path.exists("studentAccounts.txt"):
+        manage = m.Manage()
+        lines = list()
+        students = list()
+        f = open("studentAccounts.txt", "r")
+        lines = f.readlines()
+        f.close()
+        i = 0
+        username = ""
+        password = ""
+        fname = ""
+        lname = ""
+        while(i < len(lines)):
+            username = lines[i]
+            i = i+1
+            password = lines[i]
+            i = i+1
+            fname = lines[i]
+            i = i+1
+            lname = lines[i]
+            i = i+1
+            i = i+1
+            newS = s.Student(username.rstrip('\n'), password.rstrip('\n'), fname.rstrip('\n'), lname.rstrip('\n'))
+            manage.add_student(newS)
+            students.append(newS)
+        return students
+
+############ Reads and adds courses from newtraining.txt ############
+def read_Training():
+    if os.path.exists("newtraining.txt"):
+        lines = list()
+        newlist = list()
+        f = open("newtraining.txt", "r")
+        lines = f.read().split('\n')
+        f.close()
+        for d in lines:
+            if d == '':
+                continue
+            else:
+                newlist.append(d)
+            return newlist
+
+############ Writes Completed Courses for each user into MyCollege_training.txt ############
+def write_Training():
+    p = open("MyCollege_training.txt", "w")
+    with open("courses.csv", newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+    data.sort()
+    name = ""
+    for c in data:
+        if not c:
+            continue
+        if name == "":
+            name=c[0]
+            p.write(c[0] + "\n" + c[1] + "\n")
+        elif c[0]==name:
+            p.write(c[1] + "\n")
+        elif c[0]!=name:
+            p.write("=====\n")
+            name=c[0]
+            p.write(c[0] + "\n" + c[1] + "\n")
+
+
+############ Saved Jobs API ############
+def read_savedJobs():
+    p = open("MyCollege_savedJobs.txt", "w+")
+    with open("save_job.csv", newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+    data.sort()
+    name = ""
+    for c in data:
+        if not c:
+            continue
+        if name == "":
+            name=c[0]
+            p.write(c[0] + "\n" + c[1] + "\n")
+        elif c[0]==name:
+            p.write(c[1] + "\n")
+        elif c[0]!=name:
+            p.write("=====\n")
+            name=c[0]
+            p.write(c[0] + "\n" + c[1] + "\n")
+
+############ Applied Jobs API ############
+def read_appliedJobs():
+    p = open("MyCollege_appliedJobs.txt", "w+")
+    with open("applications.csv", newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+    while([] in data) :
+        data.remove([])
+    data.sort(key = lambda x: x[1])
+    title = ""
+    for c in data:
+        if title == "":
+            title=c[1]
+            p.write(c[1] + "\n" + c[0] + "\n\"" + c[5] + "\"\n")
+        elif c[1]==title:
+            p.write(c[0] + "\n\"" + c[5] + "\"\n")
+        elif c[1]!=title:
+            p.write("=====\n")
+            title=c[1]
+            p.write(c[1] + "\n" + c[0] + "\n\"" + c[5] + "\"\n")

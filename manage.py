@@ -219,6 +219,8 @@ class Manage:
             writer_csv = csv.writer(file)
             for element in notify_applicants:
                 writer_csv.writerow(element)
+
+        write_jobs()
     ######################################################################
 
     def delete_save_job(self, name, title):
@@ -347,6 +349,10 @@ class Manage:
         return None
 
     def add_job(self, job, n):
+        for element in self.job_list:
+            if element.get_title() == job.get_title():
+                print("\nThere is a job with that name. Rename the job for it to be entered")
+                return None
         if len(self.job_list) >= 10:
             print("\nYou cannot post anymore jobs. Limited to 10.")
             return None
@@ -358,6 +364,7 @@ class Manage:
                 writer_csv = csv.writer(file)
                 writer_csv.writerow((job.get_title(), job.get_description(), job.get_employer(), job.get_location(), job.get_salary(), job.get_poster_name()))
 
+            write_jobs()
             return(job.get_poster_name())
 
 
@@ -409,6 +416,7 @@ class Manage:
                 writer_csv = csv.writer(file_stg)
                 writer_csv.writerow((user_name, "ON", "ON", "ON", "English"))
 
+            write_users()
             return user_name
 
         else:
@@ -485,6 +493,8 @@ class Manage:
         with open(FILENAME_PROFILE, "a") as file:
             writer_csv = csv.writer(file)
             writer_csv.writerow((name, title, major, university, biography, experience, education))
+
+        write_profiles()
 
     def view_profile(self, name):
         with open(FILENAME_PROFILE, "r") as file:
@@ -650,6 +660,8 @@ def compare_dates(date1, date2):
     return date1<date2
 
 
+######################### Epic 10 #######################################
+
 def all_users():
     username = list()
 
@@ -661,3 +673,56 @@ def all_users():
                 username.append(row[0])
 
     return username
+
+
+def write_jobs():
+    lines = list()
+    with open(FILENAME_JOB,"r") as file:
+        reader_csv = csv.reader(file)
+        i = 0
+        for row in reader_csv:
+            if row != []:
+                lines.append(row[0])
+                lines.append(row[1])
+                lines.append(row[2])
+                lines.append(row[3])
+                lines.append(row[4])
+                lines.append("=====")
+    f = open("MyCollege_jobs.txt", "w")
+    for x in lines:
+        f.write(x + '\n')
+    return lines
+
+
+def write_users():
+    lines = list()
+    with open(FILENAME_STUDENT,"r") as file:
+        reader_csv = csv.reader(file)
+        i = 0
+        for row in reader_csv:
+            if row != []:
+                lines.append(row[0] + " " + row[4])
+    f = open("MyCollege_users.txt", "w")
+    for x in lines:
+        f.write(x + '\n')
+    return lines
+
+
+def write_profiles():
+    lines = list()
+    with open(FILENAME_PROFILE,"r") as file:
+        reader_csv = csv.reader(file)
+        i = 0
+        for row in reader_csv:
+            if row != []:
+                lines.append(row[1])
+                lines.append(row[2])
+                lines.append(row[3])
+                lines.append(row[4])
+                lines.append(row[5])
+                lines.append(row[6])
+                lines.append("=====")
+    f = open("MyCollege_profiles.txt", "w")
+    for x in lines:
+        f.write(x + '\n')
+    return lines
