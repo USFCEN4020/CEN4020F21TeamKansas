@@ -25,33 +25,34 @@ FILENAME_DEL_JOB = "del_jobs_notif.csv"
 FILENAME_COURSES = "courses.csv"
 blank_string = " "
 
-if(not os.path.exists(FILENAME_COURSES)):
-        open(FILENAME_COURSES, 'w').close()
-if(not os.path.exists("save_job.csv")):
-        open("save_job.csv", 'w').close()
-if(not os.path.exists("courses.csv")):
-        open("courses.csv", 'w').close()
-if(not os.path.exists(FILENAME_APP)):
-        open(FILENAME_APP, 'w').close()
-if(not os.path.exists("MyCollege_appliedJobs.txt")):
-    open("MyCollege_appliedJobs.txt", 'w').close()
-if(not os.path.exists("MyCollege_jobs.txt")):
-    open("MyCollege_jobs.txt", 'w').close()
-if(not os.path.exists("MyCollege_profiles.txt")):
-    open("MyCollege_profiles.txt", 'w').close()
-if(not os.path.exists("MyCollege_savedJobs.txt")):
-    open("MyCollege_savedJobs.txt", 'w').close()
-if(not os.path.exists("MyCollege_users.txt")):
-    open("MyCollege_users.txt", 'w').close()
-if(not os.path.exists("newJobs.txt")):
-    open("newJobs.txt", 'w').close()
-if(not os.path.exists("studentAccounts.txt")):
-    open("studentAccounts.txt", 'w').close()
-if(not os.path.exists("newtraining.txt")):
-    open("newtraining.txt", 'w').close()
 
 # The screen is at the begin of the program, or after its options finish (log-in, sign up)
 def Welcome_Page():
+    if (not os.path.exists(FILENAME_COURSES)):
+        open(FILENAME_COURSES, 'w').close()
+    if (not os.path.exists("save_job.csv")):
+        open("save_job.csv", 'w').close()
+    if (not os.path.exists("courses.csv")):
+        open("courses.csv", 'w').close()
+    if (not os.path.exists(FILENAME_APP)):
+        open(FILENAME_APP, 'w').close()
+    if (not os.path.exists("MyCollege_appliedJobs.txt")):
+        open("MyCollege_appliedJobs.txt", 'w').close()
+    if (not os.path.exists("MyCollege_jobs.txt")):
+        open("MyCollege_jobs.txt", 'w').close()
+    if (not os.path.exists("MyCollege_profiles.txt")):
+        open("MyCollege_profiles.txt", 'w').close()
+    if (not os.path.exists("MyCollege_savedJobs.txt")):
+        open("MyCollege_savedJobs.txt", 'w').close()
+    if (not os.path.exists("MyCollege_users.txt")):
+        open("MyCollege_users.txt", 'w').close()
+    if (not os.path.exists("newJobs.txt")):
+        open("newJobs.txt", 'w').close()
+    if (not os.path.exists("studentAccounts.txt")):
+        open("studentAccounts.txt", 'w').close()
+    if (not os.path.exists("newtraining.txt")):
+        open("newtraining.txt", 'w').close()
+
     print("\nWelcome to InCollege! An application designed for college students hoping to connect with other college students in effort to land a job!")
     print("")
 
@@ -134,7 +135,7 @@ def Login_Page(name):
     decision = input("\nYour selection: ")
 
     # Used for input validation. User should only choose a value 1-12
-    decision = utility.checkUserInput(decision, 1, 12)
+    decision = utility.checkUserInput(decision, 1, 13)
 
     if decision == "1":
         manage = m.Manage()
@@ -1278,24 +1279,25 @@ def read_newJobs():
         location = ""
         salary = 0
         poster = ""
-        while(i < len(lines)):
+        while (i < len(lines)):
             title = lines[i]
-            i = i+1
+            i = i + 1
             description = ""
-            while(lines[i] != "&&&\n"):
+            while (lines[i] != "&&&\n"):
                 description += (lines[i].rstrip('\n') + ' ')
-                i = i+1
-            i = i+1
+                i = i + 1
+            i = i + 1
             employer = lines[i]
-            i = i+1
+            i = i + 1
             location = lines[i]
-            i = i+1
+            i = i + 1
             salary = int(lines[i])
-            i = i+1
+            i = i + 1
             poster = lines[i]
-            i = i+1
-            i = i+1
-            newJ = j.Job(title.rstrip('\n'), description.rstrip('\n'), employer.rstrip('\n'), location.rstrip('\n'), salary, poster.rstrip('\n'))
+            i = i + 1
+            i = i + 1
+            newJ = j.Job(title.rstrip('\n'), description.rstrip('\n'), employer.rstrip('\n'), location.rstrip('\n'),
+                         salary, poster.rstrip('\n'))
             manage.add_job(newJ, "API_Input")
             jobs.append(newJ)
         return jobs
@@ -1314,20 +1316,21 @@ def read_studentAccounts():
         password = ""
         fname = ""
         lname = ""
-        while(i < len(lines)):
+        while (i < len(lines)):
             username = lines[i]
-            i = i+1
+            i = i + 1
             password = lines[i]
-            i = i+1
+            i = i + 1
             fname = lines[i]
-            i = i+1
+            i = i + 1
             lname = lines[i]
-            i = i+1
-            i = i+1
+            i = i + 1
+            i = i + 1
             newS = s.Student(username.rstrip('\n'), password.rstrip('\n'), fname.rstrip('\n'), lname.rstrip('\n'))
             manage.add_student(newS)
             students.append(newS)
         return students
+
 
 ############ Reads and adds courses from newtraining.txt ############
 def read_Training():
@@ -1342,7 +1345,8 @@ def read_Training():
                 continue
             else:
                 newlist.append(d)
-            return newlist
+        return newlist
+
 
 ############ Writes Completed Courses for each user into MyCollege_training.txt ############
 def write_Training():
@@ -1356,13 +1360,13 @@ def write_Training():
         if not c:
             continue
         if name == "":
-            name=c[0]
+            name = c[0]
             p.write(c[0] + "\n" + c[1] + "\n")
-        elif c[0]==name:
+        elif c[0] == name:
             p.write(c[1] + "\n")
-        elif c[0]!=name:
+        elif c[0] != name:
             p.write("=====\n")
-            name=c[0]
+            name = c[0]
             p.write(c[0] + "\n" + c[1] + "\n")
 
 
@@ -1378,14 +1382,15 @@ def read_savedJobs():
         if not c:
             continue
         if name == "":
-            name=c[0]
+            name = c[0]
             p.write(c[0] + "\n" + c[1] + "\n")
-        elif c[0]==name:
+        elif c[0] == name:
             p.write(c[1] + "\n")
-        elif c[0]!=name:
+        elif c[0] != name:
             p.write("=====\n")
-            name=c[0]
+            name = c[0]
             p.write(c[0] + "\n" + c[1] + "\n")
+
 
 ############ Applied Jobs API ############
 def read_appliedJobs():
@@ -1393,17 +1398,17 @@ def read_appliedJobs():
     with open("applications.csv", newline='') as f:
         reader = csv.reader(f)
         data = list(reader)
-    while([] in data) :
+    while ([] in data):
         data.remove([])
-    data.sort(key = lambda x: x[1])
+    data.sort(key=lambda x: x[1])
     title = ""
     for c in data:
         if title == "":
-            title=c[1]
+            title = c[1]
             p.write(c[1] + "\n" + c[0] + "\n\"" + c[5] + "\"\n")
-        elif c[1]==title:
+        elif c[1] == title:
             p.write(c[0] + "\n\"" + c[5] + "\"\n")
-        elif c[1]!=title:
+        elif c[1] != title:
             p.write("=====\n")
-            title=c[1]
+            title = c[1]
             p.write(c[1] + "\n" + c[0] + "\n\"" + c[5] + "\"\n")
