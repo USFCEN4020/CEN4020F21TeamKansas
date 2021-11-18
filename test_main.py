@@ -389,11 +389,11 @@ class TestClass:
         testjob7 = j.Job("Builder", "Builds stuff", "BobTheBuilder", "Tampa", "1000", "Bob")
         assert manage.add_job(testjob7, "Builder") == testjob7.get_poster_name()
 
-        testjob8 = j.Job("Builder", "Survives", "Mojang", "Minecraft", "3000", "Steve")
-        assert manage.add_job(testjob8, "Steve") == testjob8.get_poster_name()
+        testjob8 = j.Job("Builder2", "Survives", "Mojang", "Minecraft", "3000", "Steve")
+        assert manage.add_job(testjob8, "Steven") == testjob8.get_poster_name()
 
         testjob9 = j.Job("Master Chief", "Defeats the Covenant", "UNSC", "Halo", "117", "John")
-        assert manage.add_job(testjob9, "Steve") == testjob9.get_poster_name()
+        assert manage.add_job(testjob9, "Steveo") == testjob9.get_poster_name()
 
         testjob10 = j.Job("Spiderman", "Saves stuff", "New York", "Marvel", "2000", "Peter")
         assert manage.add_job(testjob10, "Steve") == testjob10.get_poster_name()
@@ -514,3 +514,66 @@ def test_profile_notification():
 '''------------------------------------------Epic 9 tests---------------------------------------'''
 '''No new tests to be added as Epic 9 only modifies console.py
     and all manipulation in newly added code is opening files to read or write'''
+
+
+'''------------------------------------------Epic 10 tests---------------------------------------'''
+def test_write_jobs():
+    manage = ma.Manage()
+    lines = list()
+    lines.append("Programming")
+    lines.append("will make app")
+    lines.append("tesla")
+    lines.append("calif")
+    lines.append("100000")
+    lines.append("=====")
+    with open("job_data.csv", "w") as file:
+        writer_csv = csv.writer(file)
+        writer_csv.writerow(lines)
+
+    assert ma.write_jobs() == lines
+
+
+def test_write_users():
+    manage = ma.Manage()
+    lines = list()
+    lines.append("dev")
+    lines.append("dev@123")
+    lines.append("developer")
+    lines.append("mamba")
+    lines.append("standard")
+    lines.append("0")
+    with open("student_data.csv", "w") as file:
+        writer_csv = csv.writer(file)
+        writer_csv.writerow(lines)
+    test = list()
+    test.append("dev standard")
+
+    assert ma.write_users() == test
+
+
+def test_write_profiles():
+    manage = ma.Manage()
+    lines = list()
+    lines.append("engineer")
+    lines.append("Comp Sci student")
+    lines.append("Comp sci")
+    lines.append("usf")
+    lines.append("I like hiking")
+    lines.append(" ")
+    lines.append("[University of South Florida,Comp sci degree,3]")
+    lines.append("=====")
+
+    with open("profiles.csv", "w") as file:
+        writer_csv = csv.writer(file)
+        writer_csv.writerow(lines)
+
+    test = list()
+    test.append("Comp Sci student")
+    test.append("Comp sci")
+    test.append("usf")
+    test.append("I like hiking")
+    test.append(" ")
+    test.append("[University of South Florida,Comp sci degree,3]")
+    test.append("=====")
+
+    assert ma.write_profiles() == test
