@@ -1,0 +1,7 @@
+Comp Sci student
+Comp sci
+usf
+I like hiking
+ 
+[University of South Florida,Comp sci degree,3]
+=====
